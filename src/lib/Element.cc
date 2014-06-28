@@ -26,6 +26,8 @@ namespace game {
     fixture.density = 1.0f;
     fixture.friction = 0.3f;
     fixture.restitution = 0.9f;
+    fixture.filter.categoryBits = static_cast<uint16>(ElementFunction::ENEMY);
+    fixture.filter.maskBits = static_cast<uint16>(ElementFunction::ENEMY|ElementFunction::PLAYER);
 
     m_body->CreateFixture(&fixture);
 
@@ -41,7 +43,7 @@ namespace game {
   /*static*/ Element* Element::randomGeneration(b2World *world, Random& m_random) {
     Distribution<unsigned> axis = game::Distributions::uniformDistribution (0u, 3u);
     Distribution<unsigned> type = game::Distributions::uniformDistribution (0u, 2u);
-    Distribution<float> value = game::Distributions::uniformDistribution (-330.0f, 330.0f);
+    Distribution<float> value = game::Distributions::uniformDistribution (-320.0f - ELEMENT_SIZE, 320.0f + ELEMENT_SIZE);
     Distribution<float> cible = game::Distributions::uniformDistribution (-320.0f, 320.0f);
     unsigned s_axis = axis(m_random);
     unsigned s_type = type(m_random);
@@ -54,19 +56,19 @@ namespace game {
     {
       case 0 :
 	x = s_value;
-	y = 330.0f;
+	y = 320.0f + ELEMENT_SIZE;
 	break;
       case 1 :
-	x = 330.0f;
+	x = 320.0f + ELEMENT_SIZE;
 	y = s_value;
 	break;
       case 2 :
-	x = -s_value;
-	y = -330.0f;
+	x = s_value;
+	y = -320.0f - ELEMENT_SIZE;
 	break;
       case 3 :
-	x = -330.0f;
-	y = -s_value;
+	x = -320.0f - ELEMENT_SIZE;
+	y = s_value;
 	break;
       default :
 	break;
@@ -79,13 +81,10 @@ namespace game {
     float dx = (cible_x - x);
     float dy = (cible_y - y);
     
-    float vx = dx/20.0f;//(dx*dx+dy*dy);
-    float vy = dy/20.0f;//(dx*dx+dy*dy);
+    float coef = 20.0f / sqrt(dx*dx+dy*dy);
     
-    std::cout << "Position X : " << x << std::endl;
-    std::cout << "Position Y : " << y << std::endl;
-    std::cout << "Vitesse X : " << vx << std::endl;
-    std::cout << "Vitesse Y : " << vy << std::endl;
+    float vx = coef * dx;
+    float vy = coef * dy;
     
     Element *elt = NULL;
     
@@ -139,10 +138,10 @@ namespace game {
 
     if (m_function == ElementFunction::PLAYER) {
       sf::CircleShape shape;
-      shape.setRadius(5.0f);
-      shape.setOrigin(5.0f, 5.0f);
+      shape.setRadius(22.0f);
+      shape.setOrigin(6.5f, 6.5f);
       shape.setPosition(pos.x,pos.y);
-      shape.setFillColor(sf::Color::Black);
+      shape.setFillColor(sf::Color(0,0,0,180));
       window.draw(shape);
     }
 
@@ -171,6 +170,22 @@ namespace game {
   void Element::setLinearVelocity(float vx, float vy){
     m_body->SetLinearVelocity({vx, vy});
 
+    return;
+  }
+  
+  void Element::setFilter(uint16 categoryBits, uint16 maskBits){
+    b2CircleShape circle;
+    circle.m_radius = 10.0f;
+    
+    b2FixtureDef fixture;
+    fixture.shape = &circle;
+    fixture.density = 1.0f;
+    fixture.friction = 0.3f;
+    fixture.restitution = 0.9f;
+    fixture.filter.categoryBits = categoryBits;
+    fixture.filter.maskBits = maskBits;
+    
+    m_body->CreateFixture(&fixture);
     return;
   }
   
