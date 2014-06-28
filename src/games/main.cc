@@ -15,6 +15,8 @@
  */
 #include <game/World.h>
 
+#include <Box2D/Box2D.h>
+
 #include "config.h"
 
 int main() {
@@ -22,6 +24,9 @@ int main() {
   game::World world;
   sf::RenderWindow window(sf::VideoMode(1024, 768), GAME_NAME " (version " GAME_VERSION ")");
   window.setKeyRepeatEnabled(false);
+
+  b2Vec2 b2_gravity(0.0f, 0.0f);
+  b2World b2_world(b2_gravity);
 
   // load resources
 
