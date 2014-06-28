@@ -28,6 +28,8 @@
 
 #include "config.h"
 
+#define ENTITIES_NUMBER 15
+
 int main() {
   // initialize
   std::random_device dev;
@@ -107,7 +109,7 @@ int main() {
 
   game::Element *elmt;
 
-  for (int i = 0; i < 15; i++)
+  for (int i = 0; i < ENTITIES_NUMBER; i++)
   {
     elmt = game::Element::randomGeneration(&b2_world, random);
     world.addEntity(elmt, game::Memory::FROM_HEAP);
@@ -119,6 +121,12 @@ int main() {
     // input
     sf::Event event;
     while (window.pollEvent(event)) {
+      if (ENTITIES_NUMBER + 1 > b2_world.GetBodyCount())
+      {
+	elmt = game::Element::randomGeneration(&b2_world, random);
+	world.addEntity(elmt, game::Memory::FROM_HEAP);
+      }
+      
       if (event.type == sf::Event::Closed) {
         window.close();
       } else if (event.type == sf::Event::KeyPressed) {
