@@ -10,6 +10,8 @@ set(LIBGAME0_SRC
   Random.cc
   Resource.cc
   World.cc
+  Player.cc
+  WorldListener.cc
 )
 
 add_library(game0 SHARED

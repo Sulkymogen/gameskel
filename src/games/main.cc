@@ -15,7 +15,13 @@
  */
 #include <game/World.h>
 #include <game/Element.h>
+<<<<<<< HEAD
 #include <game/Random.h>
+=======
+#include <game/Resource.h>
+#include <game/Player.h>
+#include <game/WorldListener.h>
+>>>>>>> 454bd917d7e1acfd49107c58c7b9850c176ca343
 
 #include <Box2D/Box2D.h>
 
@@ -40,9 +46,25 @@ int main() {
 
   int32 velocity_iterations = 10;
   int32 position_iterations = 8;
+  
+  game::WorldListener worldListenerInstance;
+  b2_world.SetContactListener(&worldListenerInstance);
+  
+  game::Player player(game::ElementType::ROCK, 200.0f, 200.0f, &b2_world);
+  world.addEntity(&player, game::Memory::FROM_STACK);
 
   // load resources
 
+  game::ResourceManager manager;
+
+  manager.addSearchDir(GAME_DATADIR);
+
+  game::Element::warrior=manager.getTexture("warrior.png");
+  game::Element::warrior->setSmooth(true);
+  game::Element::tiger=manager.getTexture("tiger.png");
+  game::Element::tiger->setSmooth(true);
+  game::Element::mother=manager.getTexture("mother.png");
+  game::Element::mother->setSmooth(true);
 
   // add entities
   //game::Element elt(game::ElementType::PAPER, 0.0f, 0.0f, 50.0f, 0.0f, &b2_world);
@@ -54,6 +76,7 @@ int main() {
   //game::Element elt3(game::ElementType::SCISSORS, -100.0f, 0.0f, 200.0f, 0.0f, &b2_world);
   //world.addEntity(&elt3, game::Memory::FROM_STACK);
 
+<<<<<<< HEAD
   game::Element *elmt;
   
   for (int i = 0; i < 15; i++)
@@ -62,6 +85,14 @@ int main() {
     world.addEntity(elmt, game::Memory::FROM_HEAP);
   }
   
+=======
+  game::Element elt4(game::ElementType::SCISSORS, -50.0f, 50.0f, 20.0f, -20.0f, &b2_world);
+  world.addEntity(&elt4, game::Memory::FROM_STACK);
+
+  game::Element elt5(game::ElementType::ROCK, -50.0f, 100.0f, 20.0f, -40.0f, &b2_world);
+  world.addEntity(&elt5, game::Memory::FROM_STACK);
+
+>>>>>>> 454bd917d7e1acfd49107c58c7b9850c176ca343
   // main loop
   sf::Clock clock;
   while (window.isOpen()) {
@@ -76,11 +107,40 @@ int main() {
           case sf::Keyboard::Escape:
             window.close();
             break;
+	    
+	  case sf::Keyboard::Up:
+	    player.move(game::PlayerMove::UP);
+	    break;
+	    
+	  case sf::Keyboard::Left:
+	    player.move(game::PlayerMove::LEFT);
+	    break;
+	    
+	  case sf::Keyboard::Down:
+	    player.move(game::PlayerMove::BOTTOM);
+	    break;
+	  
+	  case sf::Keyboard::Right:
+	    player.move(game::PlayerMove::RIGHT);
+	    break;
 
           default:
             break;
         }
+      }
+      else if (event.type == sf::Event::KeyReleased) {
 
+	switch (event.key.code) {    
+	  case sf::Keyboard::Up:
+	  case sf::Keyboard::Left:
+	  case sf::Keyboard::Down:
+	  case sf::Keyboard::Right:
+	    player.move(game::PlayerMove::STOP);
+	    break;
+
+	  default:
+	    break;
+	}
       }
     }
 
