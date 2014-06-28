@@ -30,7 +30,7 @@ int main() {
   game::Random random;
   
   game::World world;
-  sf::RenderWindow window(sf::VideoMode(1024, 768), GAME_NAME " (version " GAME_VERSION ")");
+  sf::RenderWindow window(sf::VideoMode(1024, 768), GAME_NAME " (version " GAME_VERSION ")", sf::Style::Titlebar|sf::Style::Close);
   window.setKeyRepeatEnabled(false);
 
   sf::View view;
