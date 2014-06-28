@@ -50,12 +50,14 @@ public:
     m_walking = false;
   }
 
-  virtual void update(float dt) {
+  virtual game::EntityFuture update(float dt) {
     if (!m_walking) {
-      return;
+      return game::EntityFuture::KEEP;
     }
 
     m_texture_walking.update(dt);
+    
+    return game::EntityFuture::KEEP;
   }
 
   virtual void render(sf::RenderWindow& window) {

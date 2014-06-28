@@ -28,6 +28,8 @@
 
 #include "config.h"
 
+#define ENTITIES_NUMBER 15
+
 int main() {
   // initialize
   std::random_device dev;
@@ -86,8 +88,6 @@ int main() {
 
   // load resources
 
-
-
   game::ResourceManager manager;
 
   manager.addSearchDir(GAME_DATADIR);
@@ -111,7 +111,7 @@ int main() {
 
   game::Element *elmt;
 
-  for (int i = 0; i < 8; i++)
+  for (int i = 0; i < ENTITIES_NUMBER; i++)
   {
     elmt = game::Element::randomGeneration(&b2_world, random);
     world.addEntity(elmt, game::Memory::FROM_HEAP);
@@ -123,6 +123,12 @@ int main() {
     // input
     sf::Event event;
     while (window.pollEvent(event)) {
+      if (ENTITIES_NUMBER + 1 > b2_world.GetBodyCount())
+      {
+	elmt = game::Element::randomGeneration(&b2_world, random);
+	world.addEntity(elmt, game::Memory::FROM_HEAP);
+      }
+      
       if (event.type == sf::Event::Closed) {
         window.close();
       } else if (event.type == sf::Event::KeyPressed) {
@@ -140,11 +146,11 @@ int main() {
       // clear when out of screen
       int i = 0;
       b2Body * currentBody = b2_world.GetBodyList();
-      std::cout << b2_world.GetBodyCount() << std::endl;
+      
       while (i < b2_world.GetBodyCount())
       {
 	b2Vec2 pos = currentBody->GetPosition();
-	if (pos.x < -300 || pos.x > 300 || pos.y < -300 || pos.y > 300)
+	if (pos.x < -340 || pos.x > 340 || pos.y < -340 || pos.y > 340)
 	{
 	  void* bodyUserData = currentBody->GetUserData();
 	  game::Element * element;
@@ -178,6 +184,13 @@ int main() {
       vx += PLAYER_SPEED;
     }
 
+    float vmax = sqrt(vx*vx+vy*vy);
+    if (0 != vmax)
+    {
+      vx = PLAYER_SPEED * vx/vmax;
+      vy = PLAYER_SPEED * vy/vmax;
+    }
+    
     player.move(vx, vy);
 
     // update
