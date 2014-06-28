@@ -19,7 +19,7 @@ namespace game {
 
   class Element : public Entity {
   public:
-    Element(ElementType type, b2World *world);
+    Element(ElementType type, float x, float y, float vx, float vy, b2World *world);
 
     virtual void update(float dt) override;
     virtual void render(sf::RenderWindow& window) override;

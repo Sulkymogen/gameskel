@@ -2,14 +2,14 @@
 
 namespace game {
 
-  Element::Element(ElementType type, b2World *world)
+  Element::Element(ElementType type, float x, float y, float vx, float vy, b2World *world)
   : m_type(type)
   , m_state(ElementState::ALIVE)
   , m_body(nullptr)
   {
     b2BodyDef def;
     def.type = b2_dynamicBody;
-    def.position.Set(0.0f, 0.0f);
+    def.position.Set(x, y);
 
     m_body = world->CreateBody(&def);
 
@@ -23,7 +23,7 @@ namespace game {
 
     m_body->CreateFixture(&fixture);
 
-    m_body->SetLinearVelocity({ 10.0f, 0.0f });
+    m_body->SetLinearVelocity({ vx, vy });
   }
 
   void Element::update(float dt) {
