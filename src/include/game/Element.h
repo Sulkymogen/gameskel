@@ -16,6 +16,11 @@ namespace game {
     ALIVE,
     STATE,
   };
+  
+  enum class ElementFunction{
+    PLAYER,
+    ENEMY,
+  };
 
   class Element : public Entity {
   public:
@@ -23,6 +28,12 @@ namespace game {
 
     virtual void update(float dt) override;
     virtual void render(sf::RenderWindow& window) override;
+    
+  protected:
+    ElementFunction getFunction(void) const;
+    void setFunction(ElementFunction function);
+    b2Vec2 getLinearVelocity(void) const;
+    void setLinearVelocity(float vx, float vy);
 
   public:
     static sf::Texture * warrior;
@@ -33,6 +44,8 @@ namespace game {
     ElementType m_type;
     ElementState m_state;
     b2Body *m_body;
+    ElementFunction m_function;
+    
   };
 
 }

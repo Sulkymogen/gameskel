@@ -16,6 +16,7 @@
 #include <game/World.h>
 #include <game/Element.h>
 #include <game/Resource.h>
+#include <game/Player.h>
 
 #include <Box2D/Box2D.h>
 
@@ -38,6 +39,9 @@ int main() {
 
   int32 velocity_iterations = 10;
   int32 position_iterations = 8;
+  
+  game::Player player(game::ElementType::ROCK, 200.0f, 200.0f, &b2_world);
+  world.addEntity(&player, game::Memory::FROM_STACK);
 
   // load resources
 
@@ -79,11 +83,40 @@ int main() {
           case sf::Keyboard::Escape:
             window.close();
             break;
+	    
+	  case sf::Keyboard::Up:
+	    player.move(game::PlayerMove::UP);
+	    break;
+	    
+	  case sf::Keyboard::Left:
+	    player.move(game::PlayerMove::LEFT);
+	    break;
+	    
+	  case sf::Keyboard::Down:
+	    player.move(game::PlayerMove::BOTTOM);
+	    break;
+	  
+	  case sf::Keyboard::Right:
+	    player.move(game::PlayerMove::RIGHT);
+	    break;
 
           default:
             break;
         }
+      }
+      else if (event.type == sf::Event::KeyReleased) {
 
+	switch (event.key.code) {    
+	  case sf::Keyboard::Up:
+	  case sf::Keyboard::Left:
+	  case sf::Keyboard::Down:
+	  case sf::Keyboard::Right:
+	    player.move(game::PlayerMove::STOP);
+	    break;
+
+	  default:
+	    break;
+	}
       }
     }
 
