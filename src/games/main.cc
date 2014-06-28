@@ -15,7 +15,10 @@
  */
 #include <game/World.h>
 #include <game/Element.h>
+#include <game/Random.h>
+#include <game/Resource.h>
 #include <game/Player.h>
+#include <game/WorldListener.h>
 
 #include <Box2D/Box2D.h>
 
@@ -23,6 +26,8 @@
 
 int main() {
   // initialize
+  game::Random random;
+  
   game::World world;
   sf::RenderWindow window(sf::VideoMode(1024, 768), GAME_NAME " (version " GAME_VERSION ")");
   window.setKeyRepeatEnabled(false);
@@ -38,6 +43,9 @@ int main() {
 
   int32 velocity_iterations = 10;
   int32 position_iterations = 8;
+  
+  game::WorldListener worldListenerInstance;
+  b2_world.SetContactListener(&worldListenerInstance);
   
   game::Player player(game::ElementType::ROCK, 200.0f, 200.0f, &b2_world);
   world.addEntity(&player, game::Memory::FROM_STACK);
@@ -69,17 +77,35 @@ int main() {
 
   // load resources
 
+  game::ResourceManager manager;
+
+  manager.addSearchDir(GAME_DATADIR);
+
+  game::Element::warrior=manager.getTexture("warrior.png");
+  game::Element::warrior->setSmooth(true);
+  game::Element::tiger=manager.getTexture("tiger.png");
+  game::Element::tiger->setSmooth(true);
+  game::Element::mother=manager.getTexture("mother.png");
+  game::Element::mother->setSmooth(true);
 
   // add entities
-  game::Element elt(game::ElementType::PAPER, 0.0f, 0.0f, 50.0f, 0.0f, &b2_world);
-  world.addEntity(&elt, game::Memory::FROM_STACK);
+  //game::Element elt(game::ElementType::PAPER, 0.0f, 0.0f, 50.0f, 0.0f, &b2_world);
+  //world.addEntity(&elt, game::Memory::FROM_STACK);
 
-  game::Element elt2(game::ElementType::ROCK, 100.0f, 0.0f, -100.0f, 0.0f, &b2_world);
-  world.addEntity(&elt2, game::Memory::FROM_STACK);
+  //game::Element elt2(game::ElementType::ROCK, 100.0f, 0.0f, -100.0f, 0.0f, &b2_world);
+  //world.addEntity(&elt2, game::Memory::FROM_STACK);
 
-  game::Element elt3(game::ElementType::SCISSORS, -100.0f, 0.0f, 200.0f, 0.0f, &b2_world);
-  world.addEntity(&elt3, game::Memory::FROM_STACK);
+  //game::Element elt3(game::ElementType::SCISSORS, -100.0f, 0.0f, 200.0f, 0.0f, &b2_world);
+  //world.addEntity(&elt3, game::Memory::FROM_STACK);
 
+  game::Element *elmt;
+  
+  for (int i = 0; i < 15; i++)
+  {
+    elmt = game::Element::randomGeneration(&b2_world, random);
+    world.addEntity(elmt, game::Memory::FROM_HEAP);
+  }
+  
   // main loop
   sf::Clock clock;
   while (window.isOpen()) {

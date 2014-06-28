@@ -1,4 +1,7 @@
 #include <game/Element.h>
+#include <iostream>
+
+#define ELEMENT_SIZE 20.0f
 
 namespace game {
 
@@ -16,7 +19,7 @@ namespace game {
 
     b2CircleShape circle;
 
-    circle.m_radius = 10.0f;
+    circle.m_radius = ELEMENT_SIZE;
 
     b2FixtureDef fixture;
     fixture.shape = &circle;
@@ -30,6 +33,76 @@ namespace game {
 
     m_body->SetLinearVelocity({ vx, vy });
   }
+  
+  /*static*/ Element* Element::randomGeneration(b2World *world, Random& m_random) {
+    Distribution<unsigned> axis = game::Distributions::uniformDistribution (0u, 3u);
+    Distribution<unsigned> type = game::Distributions::uniformDistribution (0u, 2u);
+    Distribution<float> value = game::Distributions::uniformDistribution (-330.0f, 330.0f);
+    Distribution<float> cible = game::Distributions::uniformDistribution (-320.0f, 320.0f);
+    unsigned s_axis = axis(m_random);
+    unsigned s_type = type(m_random);
+    float s_value = value(m_random);
+    
+    float x = 0.0f;
+    float y = 0.0f;
+    
+    switch (s_axis)
+    {
+      case 0 :
+	x = s_value;
+	y = 330.0f;
+	break;
+      case 1 :
+	x = 330.0f;
+	y = s_value;
+	break;
+      case 2 :
+	x = -s_value;
+	y = -330.0f;
+	break;
+      case 3 :
+	x = -330.0f;
+	y = -s_value;
+	break;
+      default :
+	break;
+    }
+    
+    float cible_x = cible(m_random);
+    float cible_y = cible(m_random);
+    
+    
+    float dx = (cible_x - x);
+    float dy = (cible_y - y);
+    
+    float vx = dx/20.0f;//(dx*dx+dy*dy);
+    float vy = dy/20.0f;//(dx*dx+dy*dy);
+    
+    std::cout << "Position X : " << x << std::endl;
+    std::cout << "Position Y : " << y << std::endl;
+    std::cout << "Vitesse X : " << vx << std::endl;
+    std::cout << "Vitesse Y : " << vy << std::endl;
+    
+    Element *elt = NULL;
+    
+    switch (s_type)
+    {
+      case 0 :
+	elt = new Element(game::ElementType::PAPER, x, y, vx, vy, world);
+	break;
+      case 1 :
+	elt = new Element(game::ElementType::ROCK, x, y, vx, vy, world);
+	break;
+      case 2 :
+	elt = new Element(game::ElementType::SCISSORS, x, y, vx, vy, world);
+	break;
+      default :
+	elt = new Element(game::ElementType::PAPER, x, y, vx, vy, world);
+	break;
+    }
+    
+    return elt;
+  }
 
   void Element::update(float dt) {
 
@@ -38,52 +111,61 @@ namespace game {
   void Element::render(sf::RenderWindow& window) {
     auto pos = m_body->GetPosition();
 
-    sf::CircleShape shape(10.0f);
-    shape.setOrigin(10.0f, 10.0f);
-    shape.setPosition(pos.x, pos.y);
+    sf::Sprite sprite;
+    sprite.setScale(ELEMENT_SIZE/90,ELEMENT_SIZE/90);
+    sprite.setOrigin(ELEMENT_SIZE, ELEMENT_SIZE);
+    sprite.setPosition(pos.x, pos.y);
 
     switch(m_type){
-    case(ElementType::PAPER): 
-      shape.setFillColor(sf::Color::Red);
+    case(ElementType::PAPER):
+      sprite.setTexture(*warrior);
       break;
     case(ElementType::ROCK):
-      shape.setFillColor(sf::Color::Green);
+      sprite.setTexture(*tiger);
       break;
     case(ElementType::SCISSORS):
-      shape.setFillColor(sf::Color::Blue);
+      sprite.setTexture(*mother);
       break;
-    default : 
-      shape.setFillColor(sf::Color::Yellow);
-    }
-    
-    window.draw(shape);
-    
-    if (m_function == ElementFunction::PLAYER) {
-      shape.setRadius(5.0f);
-      shape.setOrigin(5.0f, 5.0f);
-      shape.setFillColor(sf::Color::Black);
     }
 
-    window.draw(shape);
+    window.draw(sprite);
+
+    if (m_function == ElementFunction::PLAYER) {
+      sf::CircleShape shape;
+      shape.setRadius(5.0f);
+      shape.setOrigin(5.0f, 5.0f);
+      shape.setPosition(pos.x,pos.y);
+      shape.setFillColor(sf::Color::Black);
+      window.draw(shape);
+    }
+
+    window.draw(sprite);
+  }
+  
+  void Element::disappear(void)
+  {
+    m_state = ElementState::DEAD;
+    b2World * world = m_body->GetWorld();
+    world->DestroyBody(m_body);
   }
   
   ElementFunction Element::getFunction(void) const{
     return m_function;
   }
-  
+
   void Element::setFunction(ElementFunction function){
     m_function = function;
-    
+
     return;
   }
-  
+
   b2Vec2 Element::getLinearVelocity(void) const{
     return m_body->GetLinearVelocity();
   }
-  
+
   void Element::setLinearVelocity(float vx, float vy){
     m_body->SetLinearVelocity({vx, vy});
-    
+
     return;
   }
   
@@ -102,5 +184,12 @@ namespace game {
     m_body->CreateFixture(&fixture);
     return;
   }
+  
+  ElementType Element::getElementType(void) const {
+    return m_type;
+  }
 
+  sf::Texture * Element::warrior;
+    sf::Texture * Element::mother;
+    sf::Texture * Element::tiger;
 }
