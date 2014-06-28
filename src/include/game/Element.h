@@ -1,6 +1,7 @@
 #ifndef GAME_ELEMENT_H
 #define GAME_ELEMENT_H
 
+#include <game/Entity.h>
 #include <Box2D/Box2D.h>
 
 namespace game {
@@ -16,10 +17,12 @@ namespace game {
     STATE,
   };
 
-  class Element {
+  class Element : public Entity {
   public:
     Element(ElementType type, b2World *world);
 
+    virtual void update(float dt) override;
+    virtual void render(sf::RenderWindow& window) override;
 
   private:
     ElementType m_type;

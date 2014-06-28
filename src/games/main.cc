@@ -14,6 +14,7 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 #include <game/World.h>
+#include <game/Element.h>
 
 #include <Box2D/Box2D.h>
 
@@ -25,14 +26,24 @@ int main() {
   sf::RenderWindow window(sf::VideoMode(1024, 768), GAME_NAME " (version " GAME_VERSION ")");
   window.setKeyRepeatEnabled(false);
 
+  sf::View view;
+  view.setCenter(0.0f, 0.0f);
+  view.setSize(600.0f, 600.0f);
+  view.setViewport({ 0, 0, 768.0f / 1024.0f, 1.0f });
+  window.setView(view);
+
   b2Vec2 b2_gravity(0.0f, 0.0f);
   b2World b2_world(b2_gravity);
+
+  int32 velocity_iterations = 6;
+  int32 position_iterations = 2;
 
   // load resources
 
 
   // add entities
-
+  game::Element elt(game::ElementType::PAPER, &b2_world);
+  world.addEntity(&elt, game::Memory::FROM_STACK);
 
   // main loop
   sf::Clock clock;
@@ -58,7 +69,9 @@ int main() {
 
     // update
     sf::Time elapsed = clock.restart();
-    world.update(elapsed.asSeconds());
+    float dt = elapsed.asSeconds();
+    b2_world.Step(dt, velocity_iterations, position_iterations);
+    world.update(dt);
 
     // render
     window.clear(sf::Color::White);
