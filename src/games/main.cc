@@ -30,7 +30,8 @@
 
 int main() {
   // initialize
-  game::Random random;
+  std::random_device dev;
+  game::Random random(dev());
 
   game::World world;
   sf::RenderWindow window(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT), GAME_NAME " (version " GAME_VERSION ")", sf::Style::Titlebar|sf::Style::Close);
