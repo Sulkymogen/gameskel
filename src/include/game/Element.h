@@ -24,6 +24,11 @@ namespace game {
     virtual void update(float dt) override;
     virtual void render(sf::RenderWindow& window) override;
 
+  public:
+    static sf::Texture * warrior;
+    static sf::Texture * mother;
+    static sf::Texture * tiger;
+
   private:
     ElementType m_type;
     ElementState m_state;

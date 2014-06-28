@@ -35,26 +35,27 @@ namespace game {
   void Element::render(sf::RenderWindow& window) {
     auto pos = m_body->GetPosition();
 
-    sf::CircleShape shape(10.0f);
-    shape.setOrigin(10.0f, 10.0f);
-    shape.setPosition(pos.x, pos.y);
+    sf::Sprite sprite;
+    sprite.setOrigin(10.0f, 10.0f);
+    sprite.setPosition(pos.x, pos.y);
 
     switch(m_type){
     case(ElementType::PAPER): 
-      shape.setFillColor(sf::Color::Red);
+      sprite.setTexture(*warrior);
       break;
     case(ElementType::ROCK):
-      shape.setFillColor(sf::Color::Green);
+      sprite.setTexture(*tiger);
       break;
     case(ElementType::SCISSORS):
-      shape.setFillColor(sf::Color::Blue);
+      sprite.setTexture(*mother);
       break;
-    default : 
-      shape.setFillColor(sf::Color::Yellow);
     }
 
-    window.draw(shape);
+    window.draw(sprite);
   }
 
 
+  sf::Texture * Element::warrior;
+    sf::Texture * Element::mother;
+    sf::Texture * Element::tiger;
 }

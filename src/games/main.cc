@@ -15,6 +15,7 @@
  */
 #include <game/World.h>
 #include <game/Element.h>
+#include <game/Resource.h>
 
 #include <Box2D/Box2D.h>
 
@@ -40,6 +41,13 @@ int main() {
 
   // load resources
 
+  game::ResourceManager manager;
+
+  manager.addSearchDir(GAME_DATADIR);
+
+  game::Element::warrior=manager.getTexture("warrior.png");
+  game::Element::tiger=manager.getTexture("tiger.png");
+  game::Element::mother=manager.getTexture("mother.png");
 
   // add entities
   game::Element elt(game::ElementType::PAPER, 0.0f, 0.0f, 50.0f, 0.0f, &b2_world);
@@ -50,6 +58,12 @@ int main() {
 
   game::Element elt3(game::ElementType::SCISSORS, -100.0f, 0.0f, 200.0f, 0.0f, &b2_world);
   world.addEntity(&elt3, game::Memory::FROM_STACK);
+
+  game::Element elt4(game::ElementType::SCISSORS, -50.0f, 50.0f, 20.0f, -20.0f, &b2_world);
+  world.addEntity(&elt4, game::Memory::FROM_STACK);
+
+  game::Element elt5(game::ElementType::ROCK, -50.0f, 100.0f, 20.0f, -40.0f, &b2_world);
+  world.addEntity(&elt5, game::Memory::FROM_STACK);
 
   // main loop
   sf::Clock clock;
