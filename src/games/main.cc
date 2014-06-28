@@ -45,6 +45,8 @@ int main() {
 
   // load resources
 
+
+
   game::ResourceManager manager;
 
   manager.addSearchDir(GAME_DATADIR);
@@ -55,6 +57,12 @@ int main() {
   game::Element::tiger->setSmooth(true);
   game::Element::mother=manager.getTexture("mother.png");
   game::Element::mother->setSmooth(true);
+
+  sf::Texture * background = manager.getTexture("background.jpg");
+  sf::Sprite bgsprite ;
+  bgsprite.setScale(0.66f,1.0f);
+  bgsprite.setPosition(-300,-300);
+  bgsprite.setTexture(* background);
 
   // add entities
   game::Element elt(game::ElementType::PAPER, 0.0f, 0.0f, 50.0f, 0.0f, &b2_world);
@@ -131,6 +139,7 @@ int main() {
 
     // render
     window.clear(sf::Color::White);
+    window.draw(bgsprite);
     world.render(window);
     window.display();
   }
