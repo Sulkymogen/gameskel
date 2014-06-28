@@ -98,12 +98,18 @@ int main() {
   game::Element::mother=manager.getTexture("mother.png");
   game::Element::mother->setSmooth(true);
 
-
+#if 0
   sf::Texture *background = manager.getTexture("background.jpg");
   sf::Sprite bgsprite ;
   bgsprite.setScale(0.59,0.79f);
   bgsprite.setPosition(-300,-300);
   bgsprite.setTexture(* background);
+#else
+  sf::Texture *background = manager.getTexture("background2.png");
+  sf::Sprite bgsprite ;
+  bgsprite.setPosition(-300,-300);
+  bgsprite.setTexture(* background);
+#endif // 0
 
   sf::Font *font = manager.getFont("arial.ttf");
   player.getScore()->setFont(font);
