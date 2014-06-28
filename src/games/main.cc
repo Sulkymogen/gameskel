@@ -66,11 +66,40 @@ int main() {
           case sf::Keyboard::Escape:
             window.close();
             break;
+	    
+	  case sf::Keyboard::Up:
+	    player.move(game::PlayerMove::UP);
+	    break;
+	    
+	  case sf::Keyboard::Left:
+	    player.move(game::PlayerMove::LEFT);
+	    break;
+	    
+	  case sf::Keyboard::Down:
+	    player.move(game::PlayerMove::BOTTOM);
+	    break;
+	  
+	  case sf::Keyboard::Right:
+	    player.move(game::PlayerMove::RIGHT);
+	    break;
 
           default:
             break;
         }
+      }
+      else if (event.type == sf::Event::KeyReleased) {
 
+	switch (event.key.code) {    
+	  case sf::Keyboard::Up:
+	  case sf::Keyboard::Left:
+	  case sf::Keyboard::Down:
+	  case sf::Keyboard::Right:
+	    player.move(game::PlayerMove::STOP);
+	    break;
+
+	  default:
+	    break;
+	}
       }
     }
 

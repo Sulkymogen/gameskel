@@ -73,6 +73,15 @@ namespace game {
     
     return;
   }
-
+  
+  b2Vec2 Element::getLinearVelocity(void) const{
+    return m_body->GetLinearVelocity();
+  }
+  
+  void Element::setLinearVelocity(float vx, float vy){
+    m_body->SetLinearVelocity({vx, vy});
+    
+    return;
+  }
 
 }

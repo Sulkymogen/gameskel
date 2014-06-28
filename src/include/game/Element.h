@@ -32,6 +32,8 @@ namespace game {
   protected:
     ElementFunction getFunction(void) const;
     void setFunction(ElementFunction function);
+    b2Vec2 getLinearVelocity(void) const;
+    void setLinearVelocity(float vx, float vy);
 
   private:
     ElementType m_type;
