@@ -19,6 +19,7 @@
 #include <game/Resource.h>
 #include <game/Player.h>
 #include <game/WorldListener.h>
+#include <iostream>
 
 #include <Box2D/Box2D.h>
 
@@ -51,8 +52,35 @@ int main() {
   
   game::Player player(game::ElementType::ROCK, 200.0f, 200.0f, &b2_world);
   world.addEntity(&player, game::Memory::FROM_STACK);
+  
+  //a static body
+  b2BodyDef boundaryDef;
+  boundaryDef.type = b2_staticBody;
+  boundaryDef.position.Set(0, 0);
+  b2Body* staticBody = b2_world.CreateBody(&boundaryDef);
+
+  //shape definition
+  b2PolygonShape polygonShape;
+
+  //fixture definition
+  b2FixtureDef fixtureDef;
+  fixtureDef.shape = &polygonShape;
+  fixtureDef.filter.categoryBits = game::ElementFunction::BOUNDARY;
+  fixtureDef.filter.maskBits = game::ElementFunction::PLAYER | game::ElementFunction::ENEMY | game::ElementFunction::BOUNDARY;
+  
+  //add four walls to the static body
+  polygonShape.SetAsBox( 310, 10, b2Vec2(0, -310), 0);//ground
+  staticBody->CreateFixture(&fixtureDef);
+  polygonShape.SetAsBox( 310, 10, b2Vec2(0, 280), 0);//ceiling
+  staticBody->CreateFixture(&fixtureDef);
+  polygonShape.SetAsBox( 10, 310, b2Vec2(-310, 0), 0);//left wall
+  staticBody->CreateFixture(&fixtureDef);
+  polygonShape.SetAsBox( 10, 310, b2Vec2(280, 0), 0);//right wall
+  staticBody->CreateFixture(&fixtureDef);
 
   // load resources
+
+
 
   game::ResourceManager manager;
 
@@ -65,6 +93,14 @@ int main() {
   game::Element::mother=manager.getTexture("mother.png");
   game::Element::mother->setSmooth(true);
 
+
+  sf::Texture * background = manager.getTexture("background.jpg");
+  sf::Sprite bgsprite ;
+  bgsprite.setScale(0.59,0.79f);
+  bgsprite.setPosition(-300,-300);
+  bgsprite.setTexture(* background);
+
+  
   game::Element *elmt;
   
   for (int i = 0; i < 8; i++)
@@ -87,40 +123,10 @@ int main() {
           case sf::Keyboard::Escape:
             window.close();
             break;
-	    
-	  case sf::Keyboard::Up:
-	    player.move(game::PlayerMove::UP);
-	    break;
-	    
-	  case sf::Keyboard::Left:
-	    player.move(game::PlayerMove::LEFT);
-	    break;
-	    
-	  case sf::Keyboard::Down:
-	    player.move(game::PlayerMove::BOTTOM);
-	    break;
-	  
-	  case sf::Keyboard::Right:
-	    player.move(game::PlayerMove::RIGHT);
-	    break;
 
           default:
             break;
         }
-      }
-      else if (event.type == sf::Event::KeyReleased) {
-
-	switch (event.key.code) {    
-	  case sf::Keyboard::Up:
-	  case sf::Keyboard::Left:
-	  case sf::Keyboard::Down:
-	  case sf::Keyboard::Right:
-	    player.move(game::PlayerMove::STOP);
-	    break;
-
-	  default:
-	    break;
-	}
       }
       
       // clear when out of screen
@@ -145,6 +151,27 @@ int main() {
       }
     }
     
+    float vx = 0.0f;
+    float vy = 0.0f;
+    
+    if(sf::Keyboard::isKeyPressed(sf::Keyboard::Up)){
+      vy -= PLAYER_SPEED;
+    }
+
+    if(sf::Keyboard::isKeyPressed(sf::Keyboard::Down)){
+      vy += PLAYER_SPEED;
+    }
+
+    if(sf::Keyboard::isKeyPressed(sf::Keyboard::Left)){
+      vx -= PLAYER_SPEED;
+    }
+    
+    if(sf::Keyboard::isKeyPressed(sf::Keyboard::Right)){
+      vx += PLAYER_SPEED;
+    }
+    
+    player.move(vx, vy);
+
     // update
     sf::Time elapsed = clock.restart();
     float dt = elapsed.asSeconds();
@@ -153,6 +180,7 @@ int main() {
 
     // render
     window.clear(sf::Color::White);
+    window.draw(bgsprite);
     world.render(window);
     window.display();
   }
