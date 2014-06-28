@@ -52,6 +52,14 @@ namespace game {
     default : 
       shape.setFillColor(sf::Color::Yellow);
     }
+    
+    window.draw(shape);
+    
+    if (m_function == ElementFunction::PLAYER) {
+      shape.setRadius(5.0f);
+      shape.setOrigin(5.0f, 5.0f);
+      shape.setFillColor(sf::Color::Black);
+    }
 
     window.draw(shape);
   }

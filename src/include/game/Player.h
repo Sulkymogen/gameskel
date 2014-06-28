@@ -8,7 +8,7 @@ namespace game {
   class Player : public Element
   {
   public:
-    explicit Player(ElementType type, b2World *world);
+    explicit Player(ElementType type, float x, float y, b2World *world);
 
   private:
 

@@ -39,7 +39,7 @@ int main() {
   int32 velocity_iterations = 6;
   int32 position_iterations = 2;
   
-  game::Player player(game::ElementType::ROCK, &b2_world);
+  game::Player player(game::ElementType::ROCK, 200.0f, 200.0f, &b2_world);
   world.addEntity(&player, game::Memory::FROM_STACK);
 
   // load resources
