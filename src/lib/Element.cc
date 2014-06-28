@@ -37,7 +37,7 @@ namespace game {
   /*static*/ Element* Element::randomGeneration(b2World *world, Random& m_random) {
     Distribution<unsigned> axis = game::Distributions::uniformDistribution (0u, 3u);
     Distribution<unsigned> type = game::Distributions::uniformDistribution (0u, 2u);
-    Distribution<float> value = game::Distributions::uniformDistribution (-330.0f, 330.0f);
+    Distribution<float> value = game::Distributions::uniformDistribution (-320.0f - ELEMENT_SIZE, 320.0f + ELEMENT_SIZE);
     Distribution<float> cible = game::Distributions::uniformDistribution (-320.0f, 320.0f);
     unsigned s_axis = axis(m_random);
     unsigned s_type = type(m_random);
@@ -50,19 +50,19 @@ namespace game {
     {
       case 0 :
 	x = s_value;
-	y = 330.0f;
+	y = 320.0f + ELEMENT_SIZE;
 	break;
       case 1 :
-	x = 330.0f;
+	x = 320.0f + ELEMENT_SIZE;
 	y = s_value;
 	break;
       case 2 :
-	x = -s_value;
-	y = -330.0f;
+	x = s_value;
+	y = -320.0f - ELEMENT_SIZE;
 	break;
       case 3 :
-	x = -330.0f;
-	y = -s_value;
+	x = -320.0f - ELEMENT_SIZE;
+	y = s_value;
 	break;
       default :
 	break;
@@ -75,13 +75,10 @@ namespace game {
     float dx = (cible_x - x);
     float dy = (cible_y - y);
     
-    float vx = dx/20.0f;//(dx*dx+dy*dy);
-    float vy = dy/20.0f;//(dx*dx+dy*dy);
+    float coef = 20.0f / sqrt(dx*dx+dy*dy);
     
-    std::cout << "Position X : " << x << std::endl;
-    std::cout << "Position Y : " << y << std::endl;
-    std::cout << "Vitesse X : " << vx << std::endl;
-    std::cout << "Vitesse Y : " << vy << std::endl;
+    float vx = coef * dx;
+    float vy = coef * dy;
     
     Element *elt = NULL;
     
