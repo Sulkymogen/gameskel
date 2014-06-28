@@ -25,10 +25,9 @@
 #include <Box2D/Box2D.h>
 
 #include <iostream>
+#include <game/Param.h>
 
 #include "config.h"
-
-#define ENTITIES_NUMBER 15
 
 int main() {
   // initialize
@@ -58,7 +57,7 @@ int main() {
   game::WorldListener worldListenerInstance;
   b2_world.SetContactListener(&worldListenerInstance);
 
-  game::Player player(game::ElementType::ROCK, 200.0f, 200.0f, &b2_world);
+  game::Player player(game::ElementType::ROCK, 0.0f, 0.0f, &b2_world);
   world.addEntity(&player, game::Memory::FROM_STACK);
 
   //a static body
