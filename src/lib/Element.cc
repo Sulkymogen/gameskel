@@ -1,5 +1,7 @@
 #include <game/Element.h>
 
+#define ELEMENT_SIZE 20.0f
+
 namespace game {
 
   Element::Element(ElementType type, float x, float y, float vx, float vy, b2World *world)
@@ -16,7 +18,7 @@ namespace game {
 
     b2CircleShape circle;
 
-    circle.m_radius = 10.0f;
+    circle.m_radius = ELEMENT_SIZE;
 
     b2FixtureDef fixture;
     fixture.shape = &circle;
@@ -36,33 +38,35 @@ namespace game {
   void Element::render(sf::RenderWindow& window) {
     auto pos = m_body->GetPosition();
 
-    sf::CircleShape shape(10.0f);
-    shape.setOrigin(10.0f, 10.0f);
-    shape.setPosition(pos.x, pos.y);
+    sf::Sprite sprite;
+    sprite.setScale(ELEMENT_SIZE/90,ELEMENT_SIZE/90);
+    sprite.setOrigin(ELEMENT_SIZE, ELEMENT_SIZE);
+    sprite.setPosition(pos.x, pos.y);
 
     switch(m_type){
-    case(ElementType::PAPER): 
-      shape.setFillColor(sf::Color::Red);
+    case(ElementType::PAPER):
+      sprite.setTexture(*warrior);
       break;
     case(ElementType::ROCK):
-      shape.setFillColor(sf::Color::Green);
+      sprite.setTexture(*tiger);
       break;
     case(ElementType::SCISSORS):
-      shape.setFillColor(sf::Color::Blue);
+      sprite.setTexture(*mother);
       break;
-    default : 
-      shape.setFillColor(sf::Color::Yellow);
-    }
-    
-    window.draw(shape);
-    
-    if (m_function == ElementFunction::PLAYER) {
-      shape.setRadius(5.0f);
-      shape.setOrigin(5.0f, 5.0f);
-      shape.setFillColor(sf::Color::Black);
     }
 
-    window.draw(shape);
+    window.draw(sprite);
+
+    if (m_function == ElementFunction::PLAYER) {
+      sf::CircleShape shape;
+      shape.setRadius(5.0f);
+      shape.setOrigin(5.0f, 5.0f);
+      shape.setPosition(pos.x,pos.y);
+      shape.setFillColor(sf::Color::Black);
+      window.draw(shape);
+    }
+
+    window.draw(sprite);
   }
   
   void Element::disappear(void)
@@ -75,20 +79,20 @@ namespace game {
   ElementFunction Element::getFunction(void) const{
     return m_function;
   }
-  
+
   void Element::setFunction(ElementFunction function){
     m_function = function;
-    
+
     return;
   }
-  
+
   b2Vec2 Element::getLinearVelocity(void) const{
     return m_body->GetLinearVelocity();
   }
-  
+
   void Element::setLinearVelocity(float vx, float vy){
     m_body->SetLinearVelocity({vx, vy});
-    
+
     return;
   }
   
@@ -96,4 +100,7 @@ namespace game {
     return m_type;
   }
 
+  sf::Texture * Element::warrior;
+    sf::Texture * Element::mother;
+    sf::Texture * Element::tiger;
 }

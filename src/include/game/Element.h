@@ -38,6 +38,11 @@ namespace game {
     void setLinearVelocity (float vx, float vy);
     ElementType getElementType (void) const;
 
+  public:
+    static sf::Texture * warrior;
+    static sf::Texture * mother;
+    static sf::Texture * tiger;
+
   private:
     ElementType m_type;
     ElementState m_state;
