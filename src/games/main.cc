@@ -23,10 +23,7 @@
 
 int main() {
   // initialize
-  game::Random& m_random ();
-  game::Distribution<unsigned> m_axis;// = uniformDistribution(0, 4);
-  game::Distribution<float> m_value;// = uniformDistribution(-330.0f, 330.0f);
-  game::Distribution<float> m_cible;// = uniformDistribution(-320.0f, 320.0f);
+  game::Random random;
   
   game::World world;
   sf::RenderWindow window(sf::VideoMode(1024, 768), GAME_NAME " (version " GAME_VERSION ")");
@@ -48,15 +45,23 @@ int main() {
 
 
   // add entities
-  game::Element elt(game::ElementType::PAPER, 0.0f, 0.0f, 50.0f, 0.0f, &b2_world);
-  world.addEntity(&elt, game::Memory::FROM_STACK);
+  //game::Element elt(game::ElementType::PAPER, 0.0f, 0.0f, 50.0f, 0.0f, &b2_world);
+  //world.addEntity(&elt, game::Memory::FROM_STACK);
 
-  game::Element elt2(game::ElementType::ROCK, 100.0f, 0.0f, -100.0f, 0.0f, &b2_world);
-  world.addEntity(&elt2, game::Memory::FROM_STACK);
+  //game::Element elt2(game::ElementType::ROCK, 100.0f, 0.0f, -100.0f, 0.0f, &b2_world);
+  //world.addEntity(&elt2, game::Memory::FROM_STACK);
 
-  game::Element elt3(game::ElementType::SCISSORS, -100.0f, 0.0f, 200.0f, 0.0f, &b2_world);
-  world.addEntity(&elt3, game::Memory::FROM_STACK);
+  //game::Element elt3(game::ElementType::SCISSORS, -100.0f, 0.0f, 200.0f, 0.0f, &b2_world);
+  //world.addEntity(&elt3, game::Memory::FROM_STACK);
 
+  game::Element *elmt;
+  
+  for (int i = 0; i < 15; i++)
+  {
+    elmt = game::Element::randomGeneration(&b2_world, random);
+    world.addEntity(elmt, game::Memory::FROM_HEAP);
+  }
+  
   // main loop
   sf::Clock clock;
   while (window.isOpen()) {

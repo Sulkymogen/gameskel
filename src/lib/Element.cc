@@ -1,4 +1,5 @@
 #include <game/Element.h>
+#include <iostream>
 
 namespace game {
 
@@ -28,45 +29,74 @@ namespace game {
     m_body->SetLinearVelocity({ vx, vy });
   }
   
-  void randomGeneration(b2World *world, Random& m_random) {
-    Distribution<unsigned> m_axis;
-    Distribution<float> m_value;
-    Distribution<float> m_cible;
-    unsigned axis = m_axis(m_random);
-    float value = m_value(m_random);
+  /*static*/ Element* Element::randomGeneration(b2World *world, Random& m_random) {
+    Distribution<unsigned> axis = game::Distributions::uniformDistribution (0u, 3u);
+    Distribution<unsigned> type = game::Distributions::uniformDistribution (0u, 2u);
+    Distribution<float> value = game::Distributions::uniformDistribution (-330.0f, 330.0f);
+    Distribution<float> cible = game::Distributions::uniformDistribution (-320.0f, 320.0f);
+    unsigned s_axis = axis(m_random);
+    unsigned s_type = type(m_random);
+    float s_value = value(m_random);
     
     float x = 0.0f;
     float y = 0.0f;
     
-    switch (axis)
+    switch (s_axis)
     {
       case 0 :
-	x = value;
+	x = s_value;
 	y = 330.0f;
 	break;
       case 1 :
 	x = 330.0f;
-	y = value;
+	y = s_value;
 	break;
       case 2 :
-	x = -value;
+	x = -s_value;
 	y = -330.0f;
 	break;
       case 3 :
 	x = -330.0f;
-	y = -value;
+	y = -s_value;
 	break;
       default :
 	break;
     }
     
-    float cible_x = m_cible(m_random);
-    float cible_y = m_cible(m_random);
+    float cible_x = cible(m_random);
+    float cible_y = cible(m_random);
+    
     
     float dx = (cible_x - x);
     float dy = (cible_y - y);
     
-    game::Element elt(game::ElementType::PAPER, x, y, dx/(dx*dx+dy*dy), dy/(dx*dx+dy*dy), world);
+    float vx = dx/20.0f;//(dx*dx+dy*dy);
+    float vy = dy/20.0f;//(dx*dx+dy*dy);
+    
+    std::cout << "Position X : " << x << std::endl;
+    std::cout << "Position Y : " << y << std::endl;
+    std::cout << "Vitesse X : " << vx << std::endl;
+    std::cout << "Vitesse Y : " << vy << std::endl;
+    
+    Element *elt = NULL;
+    
+    switch (s_type)
+    {
+      case 0 :
+	elt = new Element(game::ElementType::PAPER, x, y, vx, vy, world);
+	break;
+      case 1 :
+	elt = new Element(game::ElementType::ROCK, x, y, vx, vy, world);
+	break;
+      case 2 :
+	elt = new Element(game::ElementType::SCISSORS, x, y, vx, vy, world);
+	break;
+      default :
+	elt = new Element(game::ElementType::PAPER, x, y, vx, vy, world);
+	break;
+    }
+    
+    return elt;
   }
 
   void Element::update(float dt) {

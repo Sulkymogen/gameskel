@@ -22,7 +22,7 @@ namespace game {
   public:
     Element(ElementType type, float x, float y, float vx, float vy, b2World *world);
     
-    void randomGeneration(b2World *world, Random& m_random);
+    static Element* randomGeneration(b2World *world, Random& m_random);
 
     virtual void update(float dt) override;
     virtual void render(sf::RenderWindow& window) override;
