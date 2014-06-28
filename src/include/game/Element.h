@@ -2,6 +2,7 @@
 #define GAME_ELEMENT_H
 
 #include <game/Entity.h>
+#include <game/Random.h>
 #include <Box2D/Box2D.h>
 
 namespace game {
@@ -16,15 +17,18 @@ namespace game {
     ALIVE,
     DEAD,
   };
-  
-  enum class ElementFunction {
-    PLAYER,
-    ENEMY,
+
+  enum ElementFunction{
+    PLAYER =		0x0001,
+    ENEMY = 		0x0002,
+    BOUNDARY = 	 	0x0004,
   };
 
   class Element : public Entity {
   public:
     Element(ElementType type, float x, float y, float vx, float vy, b2World *world);
+    
+    static Element* randomGeneration(b2World *world, Random& m_random);
 
     virtual void update(float dt) override;
     virtual void render(sf::RenderWindow& window) override;
@@ -32,10 +36,11 @@ namespace game {
     
     
   protected:
-    ElementFunction getFunction (void) const;
-    void setFunction (ElementFunction function);
-    b2Vec2 getLinearVelocity (void) const;
-    void setLinearVelocity (float vx, float vy);
+    ElementFunction getFunction(void) const;
+    void setFunction(ElementFunction function);
+    b2Vec2 getLinearVelocity(void) const;
+    void setLinearVelocity(float vx, float vy);
+    void setFilter(uint16 categoryBits, uint16 maskBits);
     ElementType getElementType (void) const;
 
   public:

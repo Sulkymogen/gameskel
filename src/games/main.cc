@@ -15,8 +15,10 @@
  */
 #include <game/World.h>
 #include <game/Element.h>
+#include <game/Random.h>
 #include <game/Resource.h>
 #include <game/Player.h>
+#include <game/WorldListener.h>
 
 #include <Box2D/Box2D.h>
 
@@ -24,6 +26,8 @@
 
 int main() {
   // initialize
+  game::Random random;
+  
   game::World world;
   sf::RenderWindow window(sf::VideoMode(1024, 768), GAME_NAME " (version " GAME_VERSION ")");
   window.setKeyRepeatEnabled(false);
@@ -40,8 +44,36 @@ int main() {
   int32 velocity_iterations = 10;
   int32 position_iterations = 8;
   
+  game::WorldListener worldListenerInstance;
+  b2_world.SetContactListener(&worldListenerInstance);
+  
   game::Player player(game::ElementType::ROCK, 200.0f, 200.0f, &b2_world);
   world.addEntity(&player, game::Memory::FROM_STACK);
+  
+  //a static body
+  b2BodyDef boundaryDef;
+  boundaryDef.type = b2_staticBody;
+  boundaryDef.position.Set(0, 0);
+  b2Body* staticBody = b2_world.CreateBody(&boundaryDef);
+
+  //shape definition
+  b2PolygonShape polygonShape;
+
+  //fixture definition
+  b2FixtureDef fixtureDef;
+  fixtureDef.shape = &polygonShape;
+  fixtureDef.filter.categoryBits = game::ElementFunction::BOUNDARY;
+  fixtureDef.filter.maskBits = game::ElementFunction::PLAYER | game::ElementFunction::ENEMY | game::ElementFunction::BOUNDARY;
+  
+  //add four walls to the static body
+  polygonShape.SetAsBox( 310, 10, b2Vec2(0, -310), 0);//ground
+  staticBody->CreateFixture(&fixtureDef);
+  polygonShape.SetAsBox( 310, 10, b2Vec2(0, 280), 0);//ceiling
+  staticBody->CreateFixture(&fixtureDef);
+  polygonShape.SetAsBox( 10, 310, b2Vec2(-310, 0), 0);//left wall
+  staticBody->CreateFixture(&fixtureDef);
+  polygonShape.SetAsBox( 10, 310, b2Vec2(280, 0), 0);//right wall
+  staticBody->CreateFixture(&fixtureDef);
 
   // load resources
 
@@ -65,21 +97,23 @@ int main() {
   bgsprite.setTexture(* background);
 
   // add entities
-  game::Element elt(game::ElementType::PAPER, 0.0f, 0.0f, 50.0f, 0.0f, &b2_world);
-  world.addEntity(&elt, game::Memory::FROM_STACK);
+  //game::Element elt(game::ElementType::PAPER, 0.0f, 0.0f, 50.0f, 0.0f, &b2_world);
+  //world.addEntity(&elt, game::Memory::FROM_STACK);
 
-  game::Element elt2(game::ElementType::ROCK, 100.0f, 0.0f, -100.0f, 0.0f, &b2_world);
-  world.addEntity(&elt2, game::Memory::FROM_STACK);
+  //game::Element elt2(game::ElementType::ROCK, 100.0f, 0.0f, -100.0f, 0.0f, &b2_world);
+  //world.addEntity(&elt2, game::Memory::FROM_STACK);
 
-  game::Element elt3(game::ElementType::SCISSORS, -100.0f, 0.0f, 200.0f, 0.0f, &b2_world);
-  world.addEntity(&elt3, game::Memory::FROM_STACK);
+  //game::Element elt3(game::ElementType::SCISSORS, -100.0f, 0.0f, 200.0f, 0.0f, &b2_world);
+  //world.addEntity(&elt3, game::Memory::FROM_STACK);
 
-  game::Element elt4(game::ElementType::SCISSORS, -50.0f, 50.0f, 20.0f, -20.0f, &b2_world);
-  world.addEntity(&elt4, game::Memory::FROM_STACK);
-
-  game::Element elt5(game::ElementType::ROCK, -50.0f, 100.0f, 20.0f, -40.0f, &b2_world);
-  world.addEntity(&elt5, game::Memory::FROM_STACK);
-
+  game::Element *elmt;
+  
+  for (int i = 0; i < 15; i++)
+  {
+    elmt = game::Element::randomGeneration(&b2_world, random);
+    world.addEntity(elmt, game::Memory::FROM_HEAP);
+  }
+  
   // main loop
   sf::Clock clock;
   while (window.isOpen()) {
@@ -119,14 +153,23 @@ int main() {
 
 	switch (event.key.code) {    
 	  case sf::Keyboard::Up:
+	    player.stop(game::PlayerMove::UP);
+	    break;
+	    
 	  case sf::Keyboard::Left:
+	    player.stop(game::PlayerMove::LEFT);
+	    break;
+	    
 	  case sf::Keyboard::Down:
+	    player.stop(game::PlayerMove::BOTTOM);
+	    break;
+	  
 	  case sf::Keyboard::Right:
-	    player.move(game::PlayerMove::STOP);
+	    player.stop(game::PlayerMove::RIGHT);
 	    break;
 
-	  default:
-	    break;
+          default:
+            break;
 	}
       }
     }
