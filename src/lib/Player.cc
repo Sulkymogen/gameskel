@@ -5,6 +5,7 @@ namespace game {
 
   Player::Player(ElementType type, float x, float y, b2World *world)
     : Element(type, x, y, 0.0f, 0.0f, world)
+    , m_score(new Score())
   {
     setFunction(ElementFunction::PLAYER);
     setFilter(ElementFunction::PLAYER, ElementFunction::ENEMY|ElementFunction::PLAYER|ElementFunction::BOUNDARY);
@@ -14,6 +15,10 @@ namespace game {
     setLinearVelocity(vx, vy);
     
     return;
+  }
+  
+  Score *Player::getScore(){
+    return m_score;
   }
   
 }
