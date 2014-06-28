@@ -85,14 +85,19 @@ namespace game {
       }
 
       EntityPtr& operator=(EntityPtr&& other) {
-        m_deleter(m_entity);
+        if (m_deleter) {
+          m_deleter(m_entity);
+        }
+
         m_entity = other.m_entity;
         m_deleter = std::move(other.m_deleter);
         return *this;
       }
 
       ~EntityPtr() {
-        m_deleter(m_entity);
+        if (m_deleter) {
+          m_deleter(m_entity);
+        }
       }
 
       Entity *get() {
