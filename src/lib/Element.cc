@@ -14,6 +14,7 @@ namespace game {
     m_body = world->CreateBody(&def);
 
     b2CircleShape circle;
+
     circle.m_radius = 10.0f;
 
     b2FixtureDef fixture;
@@ -36,19 +37,21 @@ namespace game {
     sf::CircleShape shape(10.0f);
     shape.setOrigin(10.0f, 10.0f);
     shape.setPosition(pos.x, pos.y);
-    switch(type){
-    case(PAPER): 
+
+    switch(m_type){
+    case(ElementType::PAPER): 
       shape.setFillColor(sf::Color::Red);
       break;
-    case(ROCK):
+    case(ElementType::ROCK):
       shape.setFillColor(sf::Color::Green);
       break;
-    case(SCISSORS):
+    case(ElementType::SCISSORS):
       shape.setFillColor(sf::Color::Blue);
       break;
     default : 
       shape.setFillColor(sf::Color::Yellow);
     }
+
     window.draw(shape);
   }
 
