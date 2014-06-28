@@ -1,4 +1,5 @@
 #include <game/Player.h>
+#include <iostream>
 
 namespace game {
 
@@ -9,51 +10,8 @@ namespace game {
     setFilter(ElementFunction::PLAYER, ElementFunction::ENEMY|ElementFunction::PLAYER|ElementFunction::BOUNDARY);
   }
   
-  void Player::move(PlayerMove move){
-    switch(move){
-      case PlayerMove::UP:
-	  setLinearVelocity(getLinearVelocity().x, -PLAYER_SPEED);
-	break;
-	
-      case PlayerMove::LEFT:
-	setLinearVelocity(-PLAYER_SPEED, getLinearVelocity().y);
-	break;
-	
-      case PlayerMove::BOTTOM:
-	setLinearVelocity(getLinearVelocity().x, +PLAYER_SPEED);
-	break;
-	
-      case PlayerMove::RIGHT:
-	setLinearVelocity(+PLAYER_SPEED, getLinearVelocity().y);
-	break;
-	
-      default:
-	break;
-    }
-    
-    return;
-  }
-  
-  void Player::stop(PlayerMove move){
-    switch(move){
-      case PlayerMove::UP:
-	  setLinearVelocity(getLinearVelocity().x, 0.0f);
-	break;
-	
-      case PlayerMove::LEFT:
-	setLinearVelocity(0.0f, getLinearVelocity().y);
-	break;
-	
-      case PlayerMove::BOTTOM:
-	setLinearVelocity(getLinearVelocity().x, 0.0f);
-	
-      case PlayerMove::RIGHT:
-	setLinearVelocity(0.0f, getLinearVelocity().y);
-	break;
-	
-      default:
-	break;
-    }
+  void Player::move(float vx, float vy){
+    setLinearVelocity(vx, vy);
     
     return;
   }

@@ -19,6 +19,7 @@
 #include <game/Resource.h>
 #include <game/Player.h>
 #include <game/WorldListener.h>
+#include <iostream>
 
 #include <Box2D/Box2D.h>
 
@@ -118,51 +119,33 @@ int main() {
           case sf::Keyboard::Escape:
             window.close();
             break;
-	    
-	  case sf::Keyboard::Up:
-	    player.move(game::PlayerMove::UP);
-	    break;
-	    
-	  case sf::Keyboard::Left:
-	    player.move(game::PlayerMove::LEFT);
-	    break;
-	    
-	  case sf::Keyboard::Down:
-	    player.move(game::PlayerMove::BOTTOM);
-	    break;
-	  
-	  case sf::Keyboard::Right:
-	    player.move(game::PlayerMove::RIGHT);
-	    break;
 
           default:
             break;
         }
       }
-      else if (event.type == sf::Event::KeyReleased) {
-
-	switch (event.key.code) {    
-	  case sf::Keyboard::Up:
-	    player.stop(game::PlayerMove::UP);
-	    break;
-	    
-	  case sf::Keyboard::Left:
-	    player.stop(game::PlayerMove::LEFT);
-	    break;
-	    
-	  case sf::Keyboard::Down:
-	    player.stop(game::PlayerMove::BOTTOM);
-	    break;
-	  
-	  case sf::Keyboard::Right:
-	    player.stop(game::PlayerMove::RIGHT);
-	    break;
-
-          default:
-            break;
-	}
-      }
     }
+    
+    float vx = 0.0f;
+    float vy = 0.0f;
+    
+    if(sf::Keyboard::isKeyPressed(sf::Keyboard::Up)){
+      vy -= PLAYER_SPEED;
+    }
+
+    if(sf::Keyboard::isKeyPressed(sf::Keyboard::Down)){
+      vy += PLAYER_SPEED;
+    }
+
+    if(sf::Keyboard::isKeyPressed(sf::Keyboard::Left)){
+      vx -= PLAYER_SPEED;
+    }
+    
+    if(sf::Keyboard::isKeyPressed(sf::Keyboard::Right)){
+      vx += PLAYER_SPEED;
+    }
+    
+    player.move(vx, vy);
 
     // update
     sf::Time elapsed = clock.restart();
