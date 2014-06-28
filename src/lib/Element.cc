@@ -135,7 +135,7 @@ namespace game {
       shape.setRadius(22.0f);
       shape.setOrigin(6.5f, 6.5f);
       shape.setPosition(pos.x,pos.y);
-      shape.setFillColor(sf::Color(0,0,0,180));
+      shape.setFillColor(sf::Color(0,0,0,150));
       window.draw(shape);
     }
 
