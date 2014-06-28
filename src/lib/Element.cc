@@ -21,6 +21,7 @@ namespace game {
     fixture.shape = &circle;
     fixture.density = 1.0f;
     fixture.friction = 0.3f;
+    fixture.restitution = 0.9f;
 
     m_body->CreateFixture(&fixture);
 

@@ -35,18 +35,21 @@ int main() {
   b2Vec2 b2_gravity(0.0f, 0.0f);
   b2World b2_world(b2_gravity);
 
-  int32 velocity_iterations = 6;
-  int32 position_iterations = 2;
+  int32 velocity_iterations = 10;
+  int32 position_iterations = 8;
 
   // load resources
 
 
   // add entities
-  game::Element elt(game::ElementType::PAPER, 0.0f, 0.0f, 10.0f, 0.0f, &b2_world);
+  game::Element elt(game::ElementType::PAPER, 0.0f, 0.0f, 50.0f, 0.0f, &b2_world);
   world.addEntity(&elt, game::Memory::FROM_STACK);
 
-  game::Element elt2(game::ElementType::ROCK, 2.0f, 3.0f, 10.0f, 5.0f, &b2_world);
+  game::Element elt2(game::ElementType::ROCK, 100.0f, 0.0f, -100.0f, 0.0f, &b2_world);
   world.addEntity(&elt2, game::Memory::FROM_STACK);
+
+  game::Element elt3(game::ElementType::SCISSORS, -100.0f, 0.0f, 200.0f, 0.0f, &b2_world);
+  world.addEntity(&elt3, game::Memory::FROM_STACK);
 
   // main loop
   sf::Clock clock;
