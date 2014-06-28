@@ -14,10 +14,10 @@ namespace game {
 
   enum class ElementState {
     ALIVE,
-    STATE,
+    DEAD,
   };
   
-  enum class ElementFunction{
+  enum class ElementFunction {
     PLAYER,
     ENEMY,
   };
@@ -28,17 +28,20 @@ namespace game {
 
     virtual void update(float dt) override;
     virtual void render(sf::RenderWindow& window) override;
+    void disappear(void);
+    
     
   protected:
-    ElementFunction getFunction(void) const;
-    void setFunction(ElementFunction function);
-    b2Vec2 getLinearVelocity(void) const;
-    void setLinearVelocity(float vx, float vy);
+    ElementFunction getFunction (void) const;
+    void setFunction (ElementFunction function);
+    b2Vec2 getLinearVelocity (void) const;
+    void setLinearVelocity (float vx, float vy);
+    ElementType getElementType (void) const;
 
   private:
     ElementType m_type;
     ElementState m_state;
-    b2Body *m_body;
+    b2Body * m_body;
     ElementFunction m_function;
     
   };

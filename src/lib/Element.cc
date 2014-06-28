@@ -65,6 +65,13 @@ namespace game {
     window.draw(shape);
   }
   
+  void Element::disappear(void)
+  {
+    m_state = ElementState::DEAD;
+    b2World * world = m_body->GetWorld();
+    world->DestroyBody(m_body);
+  }
+  
   ElementFunction Element::getFunction(void) const{
     return m_function;
   }
@@ -83,6 +90,10 @@ namespace game {
     m_body->SetLinearVelocity({vx, vy});
     
     return;
+  }
+  
+  ElementType Element::getElementType(void) const {
+    return m_type;
   }
 
 }
