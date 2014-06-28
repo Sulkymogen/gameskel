@@ -165,6 +165,13 @@ namespace game {
   ElementFunction Element::getFunction() const{
     return m_function;
   }
+  
+  bool Element::isPlayer() {
+    if (m_function == ElementFunction::PLAYER) {
+      return true;
+    }
+    return false;
+  }
 
   void Element::setFunction(ElementFunction function) {
     m_function = function;

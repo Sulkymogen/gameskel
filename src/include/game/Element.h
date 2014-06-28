@@ -36,7 +36,7 @@ namespace game {
     void disappear(void);
     ElementFunction getFunction (void) const;
     ElementType getElementType (void) const;
-
+    bool isPlayer(void);
 
   protected:
     void setFunction (ElementFunction function);
