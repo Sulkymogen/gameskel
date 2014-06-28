@@ -9,10 +9,11 @@ set(GAME_NAME "game")
 # Add ../cmake/Modules to the molude path so that CMake can find the
 # additional FindXXX modules we ship
 set(CMAKE_MODULE_PATH
-  ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/../cmake/Modules")
+  ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/../Modules")
 
-find_package(Boost REQUIRED COMPONENTS filesystem system)
 find_package(Box2D REQUIRED)
+find_package(Boost REQUIRED COMPONENTS filesystem system)
+
 
 message("Box2D: ${BOX2D_LIBRARIES}")
 
