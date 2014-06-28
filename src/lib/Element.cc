@@ -1,5 +1,7 @@
 #include <game/Element.h>
 
+#define ELEMENT_SIZE 20.0f
+
 namespace game {
 
   Element::Element(ElementType type, float x, float y, float vx, float vy, b2World *world)
@@ -16,7 +18,7 @@ namespace game {
 
     b2CircleShape circle;
 
-    circle.m_radius = 10.0f;
+    circle.m_radius = ELEMENT_SIZE;
 
     b2FixtureDef fixture;
     fixture.shape = &circle;
@@ -37,7 +39,8 @@ namespace game {
     auto pos = m_body->GetPosition();
 
     sf::Sprite sprite;
-    sprite.setOrigin(10.0f, 10.0f);
+    sprite.setScale(ELEMENT_SIZE/90,ELEMENT_SIZE/90);
+    sprite.setOrigin(ELEMENT_SIZE, ELEMENT_SIZE);
     sprite.setPosition(pos.x, pos.y);
 
     switch(m_type){
@@ -58,7 +61,9 @@ namespace game {
       sf::CircleShape shape;
       shape.setRadius(5.0f);
       shape.setOrigin(5.0f, 5.0f);
+      shape.setPosition(pos.x,pos.y);
       shape.setFillColor(sf::Color::Black);
+      window.draw(shape);
     }
 
     window.draw(sprite);

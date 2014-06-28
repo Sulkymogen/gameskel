@@ -50,8 +50,11 @@ int main() {
   manager.addSearchDir(GAME_DATADIR);
 
   game::Element::warrior=manager.getTexture("warrior.png");
+  game::Element::warrior->setSmooth(true);
   game::Element::tiger=manager.getTexture("tiger.png");
+  game::Element::tiger->setSmooth(true);
   game::Element::mother=manager.getTexture("mother.png");
+  game::Element::mother->setSmooth(true);
 
   // add entities
   game::Element elt(game::ElementType::PAPER, 0.0f, 0.0f, 50.0f, 0.0f, &b2_world);
