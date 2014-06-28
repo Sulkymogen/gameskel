@@ -25,6 +25,47 @@ namespace game {
 
     m_body->SetLinearVelocity({ vx, vy });
   }
+  
+  void randomGeneration(b2World *world, Random& m_random) {
+    Distribution<unsigned> m_axis;
+    Distribution<float> m_value;
+    Distribution<float> m_cible;
+    unsigned axis = m_axis(m_random);
+    float value = m_value(m_random);
+    
+    float x = 0.0f;
+    float y = 0.0f;
+    
+    switch (axis)
+    {
+      case 0 :
+	x = value;
+	y = 330.0f;
+	break;
+      case 1 :
+	x = 330.0f;
+	y = value;
+	break;
+      case 2 :
+	x = -value;
+	y = -330.0f;
+	break;
+      case 3 :
+	x = -330.0f;
+	y = -value;
+	break;
+      default :
+	break;
+    }
+    
+    float cible_x = m_cible(m_random);
+    float cible_y = m_cible(m_random);
+    
+    float dx = (cible_x - x);
+    float dy = (cible_y - y);
+    
+    game::Element elt(game::ElementType::PAPER, x, y, dx/(dx*dx+dy*dy), dy/(dx*dx+dy*dy), world);
+  }
 
   void Element::update(float dt) {
 

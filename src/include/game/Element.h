@@ -2,6 +2,7 @@
 #define GAME_ELEMENT_H
 
 #include <game/Entity.h>
+#include <game/Random.h>
 #include <Box2D/Box2D.h>
 
 namespace game {
@@ -20,6 +21,8 @@ namespace game {
   class Element : public Entity {
   public:
     Element(ElementType type, float x, float y, float vx, float vy, b2World *world);
+    
+    void randomGeneration(b2World *world, Random& m_random);
 
     virtual void update(float dt) override;
     virtual void render(sf::RenderWindow& window) override;
