@@ -17,6 +17,7 @@
 #include <game/Element.h>
 #include <game/Resource.h>
 #include <game/Player.h>
+#include <game/WorldListener.h>
 
 #include <Box2D/Box2D.h>
 
@@ -39,6 +40,9 @@ int main() {
 
   int32 velocity_iterations = 10;
   int32 position_iterations = 8;
+  
+  game::WorldListener worldListenerInstance;
+  b2_world.SetContactListener(&worldListenerInstance);
   
   game::Player player(game::ElementType::ROCK, 200.0f, 200.0f, &b2_world);
   world.addEntity(&player, game::Memory::FROM_STACK);
