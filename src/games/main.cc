@@ -64,7 +64,7 @@ int main() {
   b2BodyDef boundaryDef;
   boundaryDef.type = b2_staticBody;
   boundaryDef.position.Set(0, 0);
-  b2Body* staticBody = b2_world.CreateBody(&boundaryDef);
+  b2Body *staticBody = b2_world.CreateBody(&boundaryDef);
 
   //shape definition
   b2PolygonShape polygonShape;
@@ -99,7 +99,7 @@ int main() {
   game::Element::mother->setSmooth(true);
 
 
-  sf::Texture * background = manager.getTexture("background.jpg");
+  sf::Texture *background = manager.getTexture("background.jpg");
   sf::Sprite bgsprite ;
   bgsprite.setScale(0.59,0.79f);
   bgsprite.setPosition(-300,-300);
@@ -108,23 +108,19 @@ int main() {
   sf::Font *font = manager.getFont("arial.ttf");
   player.getScore()->setFont(font);
 
-  game::Element *elmt;
-
-  for (int i = 0; i < ENTITIES_NUMBER; i++)
-  {
-    elmt = game::Element::randomGeneration(&b2_world, random);
-    world.addEntity(elmt, game::Memory::FROM_HEAP);
+  for (int i = 0; i < ENTITIES_NUMBER; i++) {
+    auto elt = game::Element::randomGeneration(&b2_world, random);
+    world.addEntity(elt, game::Memory::FROM_HEAP);
   }
 
   // main loop
   sf::Clock clock;
   while (window.isOpen()) {
-    if (ENTITIES_NUMBER + 1 > b2_world.GetBodyCount())
-    {
-      elmt = game::Element::randomGeneration(&b2_world, random);
-      world.addEntity(elmt, game::Memory::FROM_HEAP);
+    if (ENTITIES_NUMBER + 1 > b2_world.GetBodyCount()) {
+      auto elt = game::Element::randomGeneration(&b2_world, random);
+      world.addEntity(elt, game::Memory::FROM_HEAP);
     }
-    
+
     // input
     sf::Event event;
     while (window.pollEvent(event)) {
@@ -142,31 +138,26 @@ int main() {
         }
       }
 
-      // clear when out of screen
-      int i = 0;
-      b2Body * currentBody = b2_world.GetBodyList();
+    }
 
-      while (i < b2_world.GetBodyCount())
-      {
-	b2Vec2 pos = currentBody->GetPosition();
-	if (pos.x < -340 || pos.x > 340 || pos.y < -340 || pos.y > 340)
-	{
-	  void* bodyUserData = currentBody->GetUserData();
-	  game::Element * element;
-	  if (bodyUserData) {
-	    element = static_cast<game::Element *>( bodyUserData);
-	    element->disappear();
-	  }
-	}
+    // clear when out of screen
+    for (b2Body *body = b2_world.GetBodyList(); body != nullptr; body = body->GetNext()) {
+      b2Vec2 pos = body->GetPosition();
 
-	currentBody = currentBody->GetNext();
-	i++;
+      if (pos.x < -340 || pos.x > 340 || pos.y < -340 || pos.y > 340) {
+        void* bodyUserData = body->GetUserData();
+
+        if (bodyUserData) {
+          auto element = static_cast<game::Element *>(bodyUserData);
+          element->disappear();
+        }
       }
+
     }
 
     float vx = 0.0f;
     float vy = 0.0f;
-    
+
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::Up)){
       vy -= PLAYER_SPEED;
     }
@@ -182,18 +173,20 @@ int main() {
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::Right)){
       vx += PLAYER_SPEED;
     }
-    
+
     //vx = sf::Mouse::getPosition().x - 300.0f - b2_world.GetBodyList()->GetPosition().x;
     //vy = sf::Mouse::getPosition().y - 300.0f - b2_world.GetBodyList()->GetPosition().y;
     //std::cout << "Mouse X : " << sf::Mouse::getPosition().x << std::endl;
     //std::cout << "Mouse y : " << sf::Mouse::getPosition().y << std::endl;
-    
-    
-    float vmax = sqrt(vx*vx+vy*vy);
-    if (0 != vmax)
-    {
-      vx = PLAYER_SPEED * vx/vmax;
-      vy = PLAYER_SPEED * vy/vmax;
+
+
+    float vmax = sqrt(vx * vx + vy * vy);
+    if (vmax > 1e-4) {
+      vx = PLAYER_SPEED * vx / vmax;
+      vy = PLAYER_SPEED * vy / vmax;
+    } else {
+      vx = 0.0f;
+      vy = 0.0f;
     }
 
     player.move(vx, vy);

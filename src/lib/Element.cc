@@ -1,4 +1,8 @@
 #include <game/Element.h>
+
+#include <cassert>
+#include <cmath>
+
 #include <game/Param.h>
 
 namespace game {
@@ -32,85 +36,85 @@ namespace game {
     m_body->SetLinearVelocity({ vx, vy });
     m_body->SetUserData(this);
   }
-  
+
   Element::~Element() {
     auto world = m_body->GetWorld();
     world->DestroyBody(m_body);
   }
-  
-  /*static*/ Element* Element::randomGeneration(b2World *world, Random& m_random) {
-    Distribution<unsigned> axis = game::Distributions::uniformDistribution (0u, 3u);
-    Distribution<unsigned> type = game::Distributions::uniformDistribution (0u, 9u);
-    Distribution<unsigned> coef = game::Distributions::uniformDistribution (50u, 50u + 2 * (int)ELEMENT_SIZE);
-    Distribution<float> value = game::Distributions::uniformDistribution (-320.0f - ELEMENT_SIZE, 320.0f + ELEMENT_SIZE);
-    Distribution<float> cible = game::Distributions::uniformDistribution (-320.0f, 320.0f);
-    unsigned s_axis = axis(m_random);
-    unsigned s_type = type(m_random);
-    unsigned s_coef = coef(m_random);
-    float s_value = value(m_random);
-    
+
+  Element *Element::randomGeneration(b2World *world, Random& m_random) {
+    Distribution<unsigned> axis_dist = game::Distributions::uniformDistribution (0u, 3u);
+    Distribution<unsigned> type_dist = game::Distributions::uniformDistribution (0u, 9u);
+    Distribution<unsigned> coef_dist = game::Distributions::uniformDistribution (50u, 50u + 2 * (int)ELEMENT_SIZE);
+    Distribution<float> value_dist = game::Distributions::uniformDistribution (-320.0f - ELEMENT_SIZE, 320.0f + ELEMENT_SIZE);
+    Distribution<float> cible_dist = game::Distributions::uniformDistribution (-320.0f, 320.0f);
+    unsigned axis = axis_dist(m_random);
+    unsigned type = type_dist(m_random);
+    unsigned coef = coef_dist(m_random);
+    float value = value_dist(m_random);
+
     float x = 0.0f;
     float y = 0.0f;
-    
-    switch (s_axis)
-    {
-      case 0 :
-	x = s_value;
-	y = 320.0f + ELEMENT_SIZE;
-	break;
-      case 1 :
-	x = 320.0f + ELEMENT_SIZE;
-	y = s_value;
-	break;
-      case 2 :
-	x = s_value;
-	y = -320.0f - ELEMENT_SIZE;
-	break;
-      case 3 :
-	x = -320.0f - ELEMENT_SIZE;
-	y = s_value;
-	break;
-      default :
-	break;
+
+    switch (axis) {
+    case 0:
+      x = value;
+      y = 320.0f + ELEMENT_SIZE;
+      break;
+    case 1:
+      x = 320.0f + ELEMENT_SIZE;
+      y = value;
+      break;
+    case 2:
+      x = value;
+      y = -320.0f - ELEMENT_SIZE;
+      break;
+    case 3:
+      x = -320.0f - ELEMENT_SIZE;
+      y = value;
+      break;
+    default:
+      assert(false);
+      break;
     }
-    
-    float cible_x = cible(m_random);
-    float cible_y = cible(m_random);
-    
-    
+
+    float cible_x = cible_dist(m_random);
+    float cible_y = cible_dist(m_random);
+
     float dx = (cible_x - x);
     float dy = (cible_y - y);
-    
-    float v_coef = s_coef / sqrt(dx*dx+dy*dy);
-    
+
+    float v_coef = coef / std::sqrt(dx*dx+dy*dy);
+
     float vx = v_coef * dx;
     float vy = v_coef * dy;
-    
-    Element *elt = NULL;    
-    
-    switch (s_type)
-    {
-      case 0 :
-      case 1 :
-	elt = new Element(ElementType::ROCK, x, y, vx, vy, world);
-	break;
-      case 2 :
-      case 3 :
-      case 4 :
-      case 5 :
-      case 6 :
-	elt = new Element(game::ElementType::PAPER, x, y, vx, vy, world);
-	break;
-      case 7 :
-      case 8 :
-      case 9 :
-	elt = new Element(game::ElementType::SCISSORS, x, y, vx, vy, world);
-	break;
-      default :
-	elt = new Element(ElementType::PAPER, x, y, vx, vy, world);
-	break;
+
+    Element *elt = nullptr;
+
+    switch (type) {
+    case 0:
+    case 1:
+      elt = new Element(ElementType::ROCK, x, y, vx, vy, world);
+      break;
+    case 2:
+    case 3:
+    case 4:
+    case 5:
+    case 6:
+      elt = new Element(game::ElementType::PAPER, x, y, vx, vy, world);
+      break;
+    case 7 :
+    case 8 :
+    case 9 :
+      elt = new Element(game::ElementType::SCISSORS, x, y, vx, vy, world);
+      break;
+    default :
+      assert(false);
+      break;
     }
-    
+
+    assert(elt);
+
     return elt;
   }
 
@@ -118,6 +122,7 @@ namespace game {
     if (m_state == ElementState::DEAD) {
       return EntityFuture::REMOVE;
     }
+
     return EntityFuture::KEEP;
   }
 
@@ -130,18 +135,16 @@ namespace game {
     sprite.setPosition(pos.x, pos.y);
 
     switch(m_type){
-    case(ElementType::PAPER):
+    case ElementType::PAPER:
       sprite.setTexture(*warrior);
       break;
-    case(ElementType::ROCK):
+    case ElementType::ROCK:
       sprite.setTexture(*tiger);
       break;
-    case(ElementType::SCISSORS):
+    case ElementType::SCISSORS:
       sprite.setTexture(*mother);
       break;
     }
-
-    window.draw(sprite);
 
     if (m_function == ElementFunction::PLAYER) {
       sf::CircleShape shape;
@@ -154,20 +157,17 @@ namespace game {
 
     window.draw(sprite);
   }
-  
-  void Element::disappear(void)
-  {
+
+  void Element::disappear() {
     m_state = ElementState::DEAD;
   }
-  
-  ElementFunction Element::getFunction(void) const{
+
+  ElementFunction Element::getFunction() const{
     return m_function;
   }
 
-  void Element::setFunction(ElementFunction function){
+  void Element::setFunction(ElementFunction function) {
     m_function = function;
-
-    return;
   }
 
   b2Vec2 Element::getLinearVelocity(void) const{
@@ -176,27 +176,24 @@ namespace game {
 
   void Element::setLinearVelocity(float vx, float vy){
     m_body->SetLinearVelocity({vx, vy});
-
-    return;
   }
-  
+
   void Element::setFilter(uint16 categoryBits, uint16 maskBits){
-    for(b2Fixture *fixture = m_body->GetFixtureList(); fixture != nullptr; fixture = fixture->GetNext()){
+    for(b2Fixture *fixture = m_body->GetFixtureList(); fixture != nullptr; fixture = fixture->GetNext()) {
       b2Filter filter = fixture->GetFilterData();
-    
+
       filter.categoryBits = categoryBits;
       filter.maskBits = maskBits;
-      
+
       fixture->SetFilterData(filter);
     }
-    return;
   }
-  
+
   ElementType Element::getElementType(void) const {
     return m_type;
   }
 
   sf::Texture * Element::warrior;
-    sf::Texture * Element::mother;
-    sf::Texture * Element::tiger;
+  sf::Texture * Element::mother;
+  sf::Texture * Element::tiger;
 }
