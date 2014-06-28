@@ -132,10 +132,10 @@ namespace game {
 
     if (m_function == ElementFunction::PLAYER) {
       sf::CircleShape shape;
-      shape.setRadius(5.0f);
-      shape.setOrigin(5.0f, 5.0f);
+      shape.setRadius(22.0f);
+      shape.setOrigin(6.5f, 6.5f);
       shape.setPosition(pos.x,pos.y);
-      shape.setFillColor(sf::Color::Black);
+      shape.setFillColor(sf::Color(0,0,0,180));
       window.draw(shape);
     }
 

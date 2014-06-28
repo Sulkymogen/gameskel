@@ -92,19 +92,9 @@ int main() {
 
   sf::Texture * background = manager.getTexture("background.jpg");
   sf::Sprite bgsprite ;
-  bgsprite.setScale(0.66f,1.0f);
+  bgsprite.setScale(0.59,0.79f);
   bgsprite.setPosition(-300,-300);
   bgsprite.setTexture(* background);
-
-  // add entities
-  //game::Element elt(game::ElementType::PAPER, 0.0f, 0.0f, 50.0f, 0.0f, &b2_world);
-  //world.addEntity(&elt, game::Memory::FROM_STACK);
-
-  //game::Element elt2(game::ElementType::ROCK, 100.0f, 0.0f, -100.0f, 0.0f, &b2_world);
-  //world.addEntity(&elt2, game::Memory::FROM_STACK);
-
-  //game::Element elt3(game::ElementType::SCISSORS, -100.0f, 0.0f, 200.0f, 0.0f, &b2_world);
-  //world.addEntity(&elt3, game::Memory::FROM_STACK);
 
   game::Element *elmt;
   
