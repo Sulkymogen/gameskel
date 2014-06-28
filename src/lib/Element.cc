@@ -183,18 +183,15 @@ namespace game {
   }
   
   void Element::setFilter(uint16 categoryBits, uint16 maskBits){
-    b2CircleShape circle;
-    circle.m_radius = 10.0f;
+    for(b2Fixture *fixture = m_body->GetFixtureList(); fixture != nullptr; fixture = fixture->GetNext()){
+      b2Filter filter = fixture->GetFilterData();
     
-    b2FixtureDef fixture;
-    fixture.shape = &circle;
-    fixture.density = 1.0f;
-    fixture.friction = 0.3f;
-    fixture.restitution = 0.9f;
-    fixture.filter.categoryBits = categoryBits;
-    fixture.filter.maskBits = maskBits;
-    
-    m_body->CreateFixture(&fixture);
+      filter.categoryBits = categoryBits;
+      filter.maskBits = maskBits;
+      
+      fixture->SetFilterData(filter);
+      std::cout << "Je tourne" << std::endl;
+    }
     return;
   }
   

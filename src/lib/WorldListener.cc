@@ -9,7 +9,8 @@ namespace game {
     void* bodyUserDataA = contact->GetFixtureA()->GetBody()->GetUserData();
     void* bodyUserDataB = contact->GetFixtureB()->GetBody()->GetUserData();
 
-    Element * elementA, * elementB;
+    Element * elementA = NULL;
+    Element * elementB = NULL;
     if (bodyUserDataA) {
       elementA = static_cast<Element *>( bodyUserDataA );
     }

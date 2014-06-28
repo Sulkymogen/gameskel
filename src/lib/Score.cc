@@ -1,5 +1,4 @@
 #include <game/Score.h>
-#include <iostream>
 
 namespace game {
   Score::Score() :
@@ -23,14 +22,16 @@ namespace game {
   
   
   void Score::render(sf::RenderWindow& window){
-    sf::CircleShape shape;
-    shape.setRadius(22.0f);
-    shape.setOrigin(6.5f, 6.5f);
-    shape.setPosition(0,0);
-    shape.setFillColor(sf::Color::Black);
-    window.draw(shape);
+    sf::Text text;
+    text.setFont(*m_font);
+    text.setString("Score: "+std::to_string(m_score));
+    text.setCharacterSize(24);
+    text.setColor(sf::Color::Black);
     
-    std::cout << "render score\n";
+    window.draw(text);
   }
   
+  void Score::setFont(sf::Font *font){
+    m_font = font;
+  }
 }
