@@ -35,6 +35,9 @@ int main() {
   std::random_device dev;
   game::Random random(dev());
 
+  b2Vec2 b2_gravity(0.0f, 0.0f);
+  b2World b2_world(b2_gravity);
+
   game::World world;
   sf::RenderWindow window(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT), GAME_NAME " (version " GAME_VERSION ")", sf::Style::Titlebar|sf::Style::Close);
   window.setKeyRepeatEnabled(false);
@@ -48,9 +51,6 @@ int main() {
 
   sf::View secondary_view({ 0, 0, SCREEN_WIDTH - SCREEN_HEIGHT, SCREEN_HEIGHT });
   secondary_view.setViewport({ ratio, 0, 1.0f - ratio, 1.0f });
-
-  b2Vec2 b2_gravity(0.0f, 0.0f);
-  b2World b2_world(b2_gravity);
 
   int32 velocity_iterations = 10;
   int32 position_iterations = 8;
@@ -105,9 +105,9 @@ int main() {
   bgsprite.setScale(0.59,0.79f);
   bgsprite.setPosition(-300,-300);
   bgsprite.setTexture(* background);
-  
-  sf::Font font = *manager.getFont("arial.ttf");
-  player.getScore()->setFont(&font);
+
+  sf::Font *font = manager.getFont("arial.ttf");
+  player.getScore()->setFont(font);
 
   game::Element *elmt;
 
@@ -128,7 +128,7 @@ int main() {
 	elmt = game::Element::randomGeneration(&b2_world, random);
 	world.addEntity(elmt, game::Memory::FROM_HEAP);
       }
-      
+
       if (event.type == sf::Event::Closed) {
         window.close();
       } else if (event.type == sf::Event::KeyPressed) {
@@ -146,7 +146,7 @@ int main() {
       // clear when out of screen
       int i = 0;
       b2Body * currentBody = b2_world.GetBodyList();
-      
+
       while (i < b2_world.GetBodyCount())
       {
 	b2Vec2 pos = currentBody->GetPosition();
@@ -190,7 +190,7 @@ int main() {
       vx = PLAYER_SPEED * vx/vmax;
       vy = PLAYER_SPEED * vy/vmax;
     }
-    
+
     player.move(vx, vy);
 
     // update
