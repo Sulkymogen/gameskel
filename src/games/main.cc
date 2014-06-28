@@ -105,7 +105,9 @@ int main() {
   bgsprite.setScale(0.59,0.79f);
   bgsprite.setPosition(-300,-300);
   bgsprite.setTexture(* background);
-
+  
+  sf::Font font = *manager.getFont("arial.ttf");
+  player.getScore()->setFont(&font);
 
   game::Element *elmt;
 
