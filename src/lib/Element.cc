@@ -41,7 +41,7 @@ namespace game {
     sprite.setPosition(pos.x, pos.y);
 
     switch(m_type){
-    case(ElementType::PAPER): 
+    case(ElementType::PAPER):
       sprite.setTexture(*warrior);
       break;
     case(ElementType::ROCK):
@@ -51,10 +51,11 @@ namespace game {
       sprite.setTexture(*mother);
       break;
     }
-    
-    window.draw(shape);
-    
+
+    window.draw(sprite);
+
     if (m_function == ElementFunction::PLAYER) {
+      sf::CircleShape shape;
       shape.setRadius(5.0f);
       shape.setOrigin(5.0f, 5.0f);
       shape.setFillColor(sf::Color::Black);
@@ -62,24 +63,24 @@ namespace game {
 
     window.draw(sprite);
   }
-  
+
   ElementFunction Element::getFunction(void) const{
     return m_function;
   }
-  
+
   void Element::setFunction(ElementFunction function){
     m_function = function;
-    
+
     return;
   }
-  
+
   b2Vec2 Element::getLinearVelocity(void) const{
     return m_body->GetLinearVelocity();
   }
-  
+
   void Element::setLinearVelocity(float vx, float vy){
     m_body->SetLinearVelocity({vx, vy});
-    
+
     return;
   }
 
