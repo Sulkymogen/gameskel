@@ -103,7 +103,7 @@ int main() {
   
   game::Element *elmt;
   
-  for (int i = 0; i < 8; i++)
+  for (int i = 0; i < 15; i++)
   {
     elmt = game::Element::randomGeneration(&b2_world, random);
     world.addEntity(elmt, game::Memory::FROM_HEAP);
@@ -132,11 +132,11 @@ int main() {
       // clear when out of screen
       int i = 0;
       b2Body * currentBody = b2_world.GetBodyList();
-      std::cout << b2_world.GetBodyCount() << std::endl;
+      
       while (i < b2_world.GetBodyCount())
       {
 	b2Vec2 pos = currentBody->GetPosition();
-	if (pos.x < -300 || pos.x > 300 || pos.y < -300 || pos.y > 300)
+	if (pos.x < -340 || pos.x > 340 || pos.y < -340 || pos.y > 340)
 	{
 	  void* bodyUserData = currentBody->GetUserData();
 	  game::Element * element;

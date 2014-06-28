@@ -36,11 +36,13 @@ namespace game {
   
   /*static*/ Element* Element::randomGeneration(b2World *world, Random& m_random) {
     Distribution<unsigned> axis = game::Distributions::uniformDistribution (0u, 3u);
-    Distribution<unsigned> type = game::Distributions::uniformDistribution (0u, 2u);
+    Distribution<unsigned> type = game::Distributions::uniformDistribution (0u, 9u);
+    Distribution<unsigned> coef = game::Distributions::uniformDistribution (50u, 50u + 2 * (int)ELEMENT_SIZE);
     Distribution<float> value = game::Distributions::uniformDistribution (-320.0f - ELEMENT_SIZE, 320.0f + ELEMENT_SIZE);
     Distribution<float> cible = game::Distributions::uniformDistribution (-320.0f, 320.0f);
     unsigned s_axis = axis(m_random);
     unsigned s_type = type(m_random);
+    unsigned s_coef = coef(m_random);
     float s_value = value(m_random);
     
     float x = 0.0f;
@@ -75,22 +77,29 @@ namespace game {
     float dx = (cible_x - x);
     float dy = (cible_y - y);
     
-    float coef = 20.0f / sqrt(dx*dx+dy*dy);
+    float v_coef = s_coef / sqrt(dx*dx+dy*dy);
     
-    float vx = coef * dx;
-    float vy = coef * dy;
+    float vx = v_coef * dx;
+    float vy = v_coef * dy;
     
-    Element *elt = NULL;
+    Element *elt = NULL;    
     
     switch (s_type)
     {
       case 0 :
-	elt = new Element(game::ElementType::PAPER, x, y, vx, vy, world);
-	break;
       case 1 :
 	elt = new Element(game::ElementType::ROCK, x, y, vx, vy, world);
 	break;
       case 2 :
+      case 3 :
+      case 4 :
+      case 5 :
+      case 6 :
+	elt = new Element(game::ElementType::PAPER, x, y, vx, vy, world);
+	break;
+      case 7 :
+      case 8 :
+      case 9 :
 	elt = new Element(game::ElementType::SCISSORS, x, y, vx, vy, world);
 	break;
       default :
