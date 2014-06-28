@@ -23,6 +23,8 @@ namespace game {
     fixture.density = 1.0f;
     fixture.friction = 0.3f;
     fixture.restitution = 0.9f;
+    fixture.filter.categoryBits = static_cast<uint16>(ElementFunction::ENEMY);
+    fixture.filter.maskBits = static_cast<uint16>(ElementFunction::ENEMY|ElementFunction::PLAYER);
 
     m_body->CreateFixture(&fixture);
 
@@ -82,6 +84,22 @@ namespace game {
   void Element::setLinearVelocity(float vx, float vy){
     m_body->SetLinearVelocity({vx, vy});
     
+    return;
+  }
+  
+  void Element::setFilter(uint16 categoryBits, uint16 maskBits){
+    b2CircleShape circle;
+    circle.m_radius = 10.0f;
+    
+    b2FixtureDef fixture;
+    fixture.shape = &circle;
+    fixture.density = 1.0f;
+    fixture.friction = 0.3f;
+    fixture.restitution = 0.9f;
+    fixture.filter.categoryBits = categoryBits;
+    fixture.filter.maskBits = maskBits;
+    
+    m_body->CreateFixture(&fixture);
     return;
   }
 

@@ -41,6 +41,31 @@ int main() {
   
   game::Player player(game::ElementType::ROCK, 200.0f, 200.0f, &b2_world);
   world.addEntity(&player, game::Memory::FROM_STACK);
+  
+  //a static body
+  b2BodyDef boundaryDef;
+  boundaryDef.type = b2_staticBody;
+  boundaryDef.position.Set(0, 0);
+  b2Body* staticBody = b2_world.CreateBody(&boundaryDef);
+
+  //shape definition
+  b2PolygonShape polygonShape;
+
+  //fixture definition
+  b2FixtureDef fixtureDef;
+  fixtureDef.shape = &polygonShape;
+  fixtureDef.filter.categoryBits = game::ElementFunction::BOUNDARY;
+  fixtureDef.filter.maskBits = game::ElementFunction::PLAYER | game::ElementFunction::ENEMY | game::ElementFunction::BOUNDARY;
+  
+  //add four walls to the static body
+  polygonShape.SetAsBox( 310, 10, b2Vec2(-10, -310), 0);//ground
+  staticBody->CreateFixture(&fixtureDef);
+  polygonShape.SetAsBox( 310, 10, b2Vec2(-10, 310), 0);//ceiling
+  staticBody->CreateFixture(&fixtureDef);
+  polygonShape.SetAsBox( 10, 310, b2Vec2(-310, 0), 0);//left wall
+  staticBody->CreateFixture(&fixtureDef);
+  polygonShape.SetAsBox( 10, 310, b2Vec2(310, 0), 0);//right wall
+  staticBody->CreateFixture(&fixtureDef);
 
   // load resources
 
@@ -94,14 +119,23 @@ int main() {
 
 	switch (event.key.code) {    
 	  case sf::Keyboard::Up:
+	    player.stop(game::PlayerMove::UP);
+	    break;
+	    
 	  case sf::Keyboard::Left:
+	    player.stop(game::PlayerMove::LEFT);
+	    break;
+	    
 	  case sf::Keyboard::Down:
+	    player.stop(game::PlayerMove::BOTTOM);
+	    break;
+	  
 	  case sf::Keyboard::Right:
-	    player.move(game::PlayerMove::STOP);
+	    player.stop(game::PlayerMove::RIGHT);
 	    break;
 
-	  default:
-	    break;
+          default:
+            break;
 	}
       }
     }

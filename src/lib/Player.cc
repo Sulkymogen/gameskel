@@ -6,28 +6,50 @@ namespace game {
     : Element(type, x, y, 0.0f, 0.0f, world)
   {
     setFunction(ElementFunction::PLAYER);
+    setFilter(ElementFunction::PLAYER, ElementFunction::ENEMY|ElementFunction::PLAYER|ElementFunction::BOUNDARY);
   }
   
   void Player::move(PlayerMove move){
     switch(move){
       case PlayerMove::UP:
-	  setLinearVelocity(getLinearVelocity().x, -10.0f);
+	  setLinearVelocity(getLinearVelocity().x, -PLAYER_SPEED);
 	break;
 	
       case PlayerMove::LEFT:
-	setLinearVelocity(-10.0f, getLinearVelocity().y);
+	setLinearVelocity(-PLAYER_SPEED, getLinearVelocity().y);
 	break;
 	
       case PlayerMove::BOTTOM:
-	setLinearVelocity(getLinearVelocity().x, +10.0f);
+	setLinearVelocity(getLinearVelocity().x, +PLAYER_SPEED);
 	break;
 	
       case PlayerMove::RIGHT:
-	setLinearVelocity(+10.0f, getLinearVelocity().y);
+	setLinearVelocity(+PLAYER_SPEED, getLinearVelocity().y);
 	break;
 	
-      case PlayerMove::STOP:
-	setLinearVelocity(0.0f, 0.0f);
+      default:
+	break;
+    }
+    
+    return;
+  }
+  
+  void Player::stop(PlayerMove move){
+    switch(move){
+      case PlayerMove::UP:
+	  setLinearVelocity(getLinearVelocity().x, 0.0f);
+	break;
+	
+      case PlayerMove::LEFT:
+	setLinearVelocity(0.0f, getLinearVelocity().y);
+	break;
+	
+      case PlayerMove::BOTTOM:
+	setLinearVelocity(getLinearVelocity().x, 0.0f);
+	
+      case PlayerMove::RIGHT:
+	setLinearVelocity(0.0f, getLinearVelocity().y);
+	break;
 	
       default:
 	break;
