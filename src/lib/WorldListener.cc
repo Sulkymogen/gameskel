@@ -1,4 +1,5 @@
 #include <game/Element.h>
+#include <game/Player.h>
 #include <game/WorldListener.h>
 #include <iostream>
 
@@ -9,7 +10,6 @@ namespace game {
     void* bodyUserDataB = contact->GetFixtureB()->GetBody()->GetUserData();
 
     Element * elementA, * elementB;
-    std::cout << "coucou\n";
     if (bodyUserDataA) {
       elementA = static_cast<Element *>( bodyUserDataA );
     }
@@ -18,28 +18,35 @@ namespace game {
     }
     
     if (bodyUserDataA && bodyUserDataB) {
-      elementA->disappear();
-      elementB->disappear();
-      /*
-      switch (elementA->getElementType())
-      {
-	case PAPER:
-	  elementA->disappear();
-	  elementB->disappear();
-	  break;
-	  
-	case ROCK:
-	  elementA->disappear();
-	  elementB->disappear();
-	  break;
-	  
-	case SCISSORS:
-	  elementA->disappear();
-	  elementB->disappear();
-	  break;
-	
+      ElementType typeB = elementB->getElementType();
+    
+      switch (elementA->getElementType()) {
+        case ElementType::PAPER:
+          if (typeB == ElementType::ROCK) {
+            elementB->disappear();
+          } else if (typeB == ElementType::SCISSORS) {
+            elementA->disappear();
+          }
+          break;
+            
+        case ElementType::ROCK:
+          if (typeB == ElementType::SCISSORS) {
+            elementB->disappear();
+          } else if (typeB == ElementType::PAPER) {
+            elementA->disappear();
+          }
+          break;
+            
+        case ElementType::SCISSORS:
+          if (typeB == ElementType::PAPER) {
+            elementB->disappear();
+          } else if (typeB == ElementType::ROCK) {
+            elementA->disappear();
+          }
+          break;
+        
       }
-      */
+      
     }
     
   }

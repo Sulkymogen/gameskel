@@ -20,13 +20,18 @@
 
 namespace game {
 
+  enum class EntityFuture {
+    KEEP,
+    REMOVE,
+  };
+  
   class Entity {
   public:
     virtual ~Entity();
 
     virtual int priority() const;
 
-    virtual void update(float dt);
+    virtual EntityFuture update(float dt);
     virtual void render(sf::RenderWindow& window);
 
   };

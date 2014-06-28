@@ -118,7 +118,7 @@ namespace game {
 
     void emitParticle(const Particle& particle);
 
-    virtual void update(float dt) override;
+    virtual EntityFuture update(float dt) override;
     virtual void render(sf::RenderWindow& window) override;
 
   private:
