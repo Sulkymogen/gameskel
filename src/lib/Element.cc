@@ -30,6 +30,12 @@ namespace game {
     m_body->CreateFixture(&fixture);
 
     m_body->SetLinearVelocity({ vx, vy });
+    m_body->SetUserData(this);
+  }
+  
+  Element::~Element() {
+    auto world = m_body->GetWorld();
+    world->DestroyBody(m_body);
   }
   
   /*static*/ Element* Element::randomGeneration(b2World *world, Random& m_random) {
@@ -86,24 +92,27 @@ namespace game {
     switch (s_type)
     {
       case 0 :
-	elt = new Element(game::ElementType::PAPER, x, y, vx, vy, world);
+	elt = new Element(ElementType::PAPER, x, y, vx, vy, world);
 	break;
       case 1 :
-	elt = new Element(game::ElementType::ROCK, x, y, vx, vy, world);
+	elt = new Element(ElementType::ROCK, x, y, vx, vy, world);
 	break;
       case 2 :
-	elt = new Element(game::ElementType::SCISSORS, x, y, vx, vy, world);
+	elt = new Element(ElementType::SCISSORS, x, y, vx, vy, world);
 	break;
       default :
-	elt = new Element(game::ElementType::PAPER, x, y, vx, vy, world);
+	elt = new Element(ElementType::PAPER, x, y, vx, vy, world);
 	break;
     }
     
     return elt;
   }
 
-  void Element::update(float dt) {
-
+  EntityFuture Element::update(float dt) {
+    if (m_state == ElementState::DEAD) {
+      return EntityFuture::REMOVE;
+    }
+    return EntityFuture::KEEP;
   }
 
   void Element::render(sf::RenderWindow& window) {
@@ -143,8 +152,6 @@ namespace game {
   void Element::disappear(void)
   {
     m_state = ElementState::DEAD;
-    b2World * world = m_body->GetWorld();
-    world->DestroyBody(m_body);
   }
   
   ElementFunction Element::getFunction(void) const{
