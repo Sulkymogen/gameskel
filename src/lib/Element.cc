@@ -6,6 +6,7 @@ namespace game {
   : m_type(type)
   , m_state(ElementState::ALIVE)
   , m_body(nullptr)
+  , m_function(ElementFunction::ENEMY)
   {
     b2BodyDef def;
     def.type = b2_dynamicBody;
@@ -39,6 +40,16 @@ namespace game {
     shape.setFillColor(sf::Color::Red);
 
     window.draw(shape);
+  }
+  
+  ElementFunction Element::getFunction(void) const{
+    return m_function;
+  }
+  
+  void Element::setFunction(ElementFunction function){
+    m_function = function;
+    
+    return;
   }
 
 

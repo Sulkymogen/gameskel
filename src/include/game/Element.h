@@ -16,6 +16,11 @@ namespace game {
     ALIVE,
     STATE,
   };
+  
+  enum class ElementFunction{
+    PLAYER,
+    ENEMY,
+  };
 
   class Element : public Entity {
   public:
@@ -23,11 +28,17 @@ namespace game {
 
     virtual void update(float dt) override;
     virtual void render(sf::RenderWindow& window) override;
+    
+  protected:
+    ElementFunction getFunction(void) const;
+    void setFunction(ElementFunction function);
 
   private:
     ElementType m_type;
     ElementState m_state;
     b2Body *m_body;
+    ElementFunction m_function;
+    
   };
 
 }

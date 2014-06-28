@@ -15,6 +15,7 @@
  */
 #include <game/World.h>
 #include <game/Element.h>
+#include <game/Player.h>
 
 #include <Box2D/Box2D.h>
 
@@ -37,6 +38,9 @@ int main() {
 
   int32 velocity_iterations = 6;
   int32 position_iterations = 2;
+  
+  game::Player player(game::ElementType::ROCK, &b2_world);
+  world.addEntity(&player, game::Memory::FROM_STACK);
 
   // load resources
 
