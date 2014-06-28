@@ -4,6 +4,7 @@
 #include <game/Entity.h>
 #include <game/Random.h>
 #include <Box2D/Box2D.h>
+#include <math.h>
 
 namespace game {
 

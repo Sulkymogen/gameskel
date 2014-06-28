@@ -22,6 +22,8 @@
 
 #include <Box2D/Box2D.h>
 
+#include <iostream>
+
 #include "config.h"
 
 int main() {
@@ -63,19 +65,9 @@ int main() {
   game::Element::mother=manager.getTexture("mother.png");
   game::Element::mother->setSmooth(true);
 
-  // add entities
-  //game::Element elt(game::ElementType::PAPER, 0.0f, 0.0f, 50.0f, 0.0f, &b2_world);
-  //world.addEntity(&elt, game::Memory::FROM_STACK);
-
-  //game::Element elt2(game::ElementType::ROCK, 100.0f, 0.0f, -100.0f, 0.0f, &b2_world);
-  //world.addEntity(&elt2, game::Memory::FROM_STACK);
-
-  //game::Element elt3(game::ElementType::SCISSORS, -100.0f, 0.0f, 200.0f, 0.0f, &b2_world);
-  //world.addEntity(&elt3, game::Memory::FROM_STACK);
-
   game::Element *elmt;
   
-  for (int i = 0; i < 15; i++)
+  for (int i = 0; i < 8; i++)
   {
     elmt = game::Element::randomGeneration(&b2_world, random);
     world.addEntity(elmt, game::Memory::FROM_HEAP);
@@ -130,8 +122,29 @@ int main() {
 	    break;
 	}
       }
+      
+      // clear when out of screen
+      int i = 0;
+      b2Body * currentBody = b2_world.GetBodyList();
+      std::cout << b2_world.GetBodyCount() << std::endl;
+      while (i < b2_world.GetBodyCount())
+      {
+	b2Vec2 pos = currentBody->GetPosition();
+	if (pos.x < -300 || pos.x > 300 || pos.y < -300 || pos.y > 300)
+	{
+	  void* bodyUserData = currentBody->GetUserData();
+	  game::Element * element;
+	  if (bodyUserData) {
+	    element = static_cast<game::Element *>( bodyUserData);
+	    element->disappear();
+	  }
+	}
+	
+	currentBody = currentBody->GetNext();
+	i++;
+      }
     }
-
+    
     // update
     sf::Time elapsed = clock.restart();
     float dt = elapsed.asSeconds();
