@@ -19,6 +19,7 @@
 #include <game/Resource.h>
 #include <game/Player.h>
 #include <game/WorldListener.h>
+#include <game/Param.h>
 #include <iostream>
 
 #include <Box2D/Box2D.h>
@@ -30,14 +31,18 @@ int main() {
   game::Random random;
   
   game::World world;
-  sf::RenderWindow window(sf::VideoMode(1024, 768), GAME_NAME " (version " GAME_VERSION ")", sf::Style::Titlebar|sf::Style::Close);
+  sf::RenderWindow window(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT), GAME_NAME " (version " GAME_VERSION ")", sf::Style::Titlebar|sf::Style::Close);
   window.setKeyRepeatEnabled(false);
 
-  sf::View view;
-  view.setCenter(0.0f, 0.0f);
-  view.setSize(600.0f, 600.0f);
-  view.setViewport({ 0, 0, 768.0f / 1024.0f, 1.0f });
-  window.setView(view);
+  sf::View main_view;
+  main_view.setCenter(0.0f, 0.0f);
+  main_view.setSize(600.0f, 600.0f);
+  main_view.setViewport({ 0, 0, SCREEN_HEIGHT / static_cast<float>(SCREEN_WIDTH), 1.0f });
+  
+  sf::View secondary_view;
+  secondary_view.setCenter(800.0f, 0.0f);
+  secondary_view.setSize(SCREEN_WIDTH - 600.0f, SCREEN_HEIGHT - 600.0f);
+  secondary_view.setViewport({ 0, 0, 1.0f - SCREEN_HEIGHT / static_cast<float>(SCREEN_WIDTH), 1.0f });
 
   b2Vec2 b2_gravity(0.0f, 0.0f);
   b2World b2_world(b2_gravity);
@@ -153,10 +158,17 @@ int main() {
     b2_world.Step(dt, velocity_iterations, position_iterations);
     world.update(dt);
 
-    // render
+    // render main view
     window.clear(sf::Color::White);
+    window.setView(main_view);
     window.draw(bgsprite);
     world.render(window);
+    
+    //Render secondary view
+    window.setView(secondary_view);
+    player.getScore()->render(window);
+    
+    
     window.display();
   }
 

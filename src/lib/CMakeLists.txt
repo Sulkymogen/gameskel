@@ -7,10 +7,11 @@ set(LIBGAME0_SRC
   Element.cc
   Entity.cc
   Particle.cc
+  Player.cc
   Random.cc
   Resource.cc
+  Score.cc
   World.cc
-  Player.cc
   WorldListener.cc
 )
 

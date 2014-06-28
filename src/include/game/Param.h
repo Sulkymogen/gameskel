@@ -1,0 +1,7 @@
+#ifndef GAME_PARAM_H
+#define GAME_PARAM_H
+
+#define SCREEN_WIDTH 1024
+#define SCREEN_HEIGHT 700
+
+#endif //GAME_PARAM_H
