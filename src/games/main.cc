@@ -42,7 +42,7 @@ int main() {
 
 
   // add entities
-  game::Element elt(game::ElementType::PAPER, &b2_world);
+  game::Element elt(game::ElementType::PAPER, 0.0f, 0.0f, 10.0f, 0.0f, &b2_world);
   world.addEntity(&elt, game::Memory::FROM_STACK);
 
   // main loop
