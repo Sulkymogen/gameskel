@@ -1,7 +1,5 @@
 #include <game/Element.h>
-#include <iostream>
-
-#define ELEMENT_SIZE 20.0f
+#include <game/Param.h>
 
 namespace game {
 
@@ -197,7 +195,6 @@ namespace game {
       filter.maskBits = maskBits;
       
       fixture->SetFilterData(filter);
-      std::cout << "Je tourne" << std::endl;
     }
     return;
   }

@@ -25,10 +25,9 @@
 #include <Box2D/Box2D.h>
 
 #include <iostream>
+#include <game/Param.h>
 
 #include "config.h"
-
-#define ENTITIES_NUMBER 15
 
 int main() {
   // initialize
@@ -58,7 +57,7 @@ int main() {
   game::WorldListener worldListenerInstance;
   b2_world.SetContactListener(&worldListenerInstance);
 
-  game::Player player(game::ElementType::ROCK, 200.0f, 200.0f, &b2_world);
+  game::Player player(game::ElementType::ROCK, 0.0f, 0.0f, &b2_world);
   world.addEntity(&player, game::Memory::FROM_STACK);
 
   //a static body
@@ -120,15 +119,15 @@ int main() {
   // main loop
   sf::Clock clock;
   while (window.isOpen()) {
+    if (ENTITIES_NUMBER + 1 > b2_world.GetBodyCount())
+    {
+      elmt = game::Element::randomGeneration(&b2_world, random);
+      world.addEntity(elmt, game::Memory::FROM_HEAP);
+    }
+    
     // input
     sf::Event event;
     while (window.pollEvent(event)) {
-      if (ENTITIES_NUMBER + 1 > b2_world.GetBodyCount())
-      {
-	elmt = game::Element::randomGeneration(&b2_world, random);
-	world.addEntity(elmt, game::Memory::FROM_HEAP);
-      }
-
       if (event.type == sf::Event::Closed) {
         window.close();
       } else if (event.type == sf::Event::KeyPressed) {
@@ -167,7 +166,7 @@ int main() {
 
     float vx = 0.0f;
     float vy = 0.0f;
-
+    
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::Up)){
       vy -= PLAYER_SPEED;
     }
@@ -183,7 +182,13 @@ int main() {
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::Right)){
       vx += PLAYER_SPEED;
     }
-
+    
+    //vx = sf::Mouse::getPosition().x - 300.0f - b2_world.GetBodyList()->GetPosition().x;
+    //vy = sf::Mouse::getPosition().y - 300.0f - b2_world.GetBodyList()->GetPosition().y;
+    //std::cout << "Mouse X : " << sf::Mouse::getPosition().x << std::endl;
+    //std::cout << "Mouse y : " << sf::Mouse::getPosition().y << std::endl;
+    
+    
     float vmax = sqrt(vx*vx+vy*vy);
     if (0 != vmax)
     {
