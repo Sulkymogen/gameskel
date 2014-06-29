@@ -13,6 +13,6 @@
 
 #define ENTITIES_NUMBER 15
 
-#define GHOST_TIME 2
+#define GHOST_TIME 1
 
 #endif //GAME_PARAM_H
