@@ -30,12 +30,25 @@
 
 #include "config.h"
 
+#include <SFML/Audio.hpp>
+
 int main() {
+  
   game::ResourceManager manager;
 
   manager.addSearchDir(GAME_DATADIR);
 
-
+  sf::SoundBuffer * ambiance_buffer = manager.getSoundBuffer("ambiance.ogg");
+  sf::Sound ambiance;
+  ambiance.setBuffer(* ambiance_buffer);
+  ambiance.setLoop(true);
+  ambiance.play();
+  
+  sf::SoundBuffer * death_buffer = manager.getSoundBuffer("nutfall.flac");
+  sf::Sound death;
+  death.setBuffer(* death_buffer);
+  
+  
   //
   // Menu
   sf::RenderWindow menu(sf::VideoMode(MENU_WIDTH, MENU_HEIGHT), "The Game With No Name (version " GAME_VERSION ")", sf::Style::Titlebar|sf::Style::Close);
@@ -116,6 +129,7 @@ int main() {
 
 
   if (play) {
+    
     float ghost_time = GHOST_TIME;
 
     bool play_with_mouse = true;
@@ -133,7 +147,7 @@ int main() {
     game::Element::world = &world;
 
 
-    world.registerHandler<game::DeadEvent>([&random, &world](game::Entity *entity, game::EventType type, game::Event *event) {
+    world.registerHandler<game::DeadEvent>([&death, &random, &world](game::Entity *entity, game::EventType type, game::Event *event) {
       game::DeadEvent *dead_event = static_cast<game::DeadEvent*>(event);
 
       auto emitter = new game::ParticleEmitter(random, 300, 0.15);
@@ -168,6 +182,8 @@ int main() {
       system->addAffector(game::Affectors::fadingAffector(0.2));
 
       world.addEntity(system, game::Memory::FROM_HEAP);
+      
+      death.play();
 
       return game::EventStatus::KEEP;
     });
