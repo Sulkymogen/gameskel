@@ -4,6 +4,7 @@
 #include <game/Entity.h>
 #include <game/Random.h>
 #include <Box2D/Box2D.h>
+#include <game/Level.h>
 
 namespace game {
   class World;
@@ -30,7 +31,7 @@ namespace game {
     Element(ElementType type, float x, float y, float vx, float vy, b2World *world);
     ~Element();
 
-    static Element* randomGeneration(b2World *world, Random& m_random);
+    static Element* randomGeneration(b2World *world, Random& m_random, ElementType player_type, Level * lv);
 
     virtual EntityFuture update(float dt) override;
     virtual void render(sf::RenderWindow& window) override;

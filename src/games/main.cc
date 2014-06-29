@@ -13,6 +13,8 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
+#include <iostream>
+
 #include <game/World.h>
 #include <game/Element.h>
 #include <game/Random.h>
@@ -22,14 +24,9 @@
 #include <game/Param.h>
 #include <game/Events.h>
 #include <game/Particle.h>
-
-
-#include <iostream>
+#include <game/Clock.h>
 
 #include <Box2D/Box2D.h>
-
-#include <iostream>
-#include <game/Param.h>
 
 #include "config.h"
 
@@ -100,8 +97,12 @@ int main() {
   game::WorldListener worldListenerInstance;
   b2_world.SetContactListener(&worldListenerInstance);
 
-  game::Player player(game::ElementType::ROCK, 0.0f, 0.0f, &b2_world);
-  world.addEntity(&player, game::Memory::FROM_STACK);
+  //game::Player player(game::ElementType::ROCK, 0.0f, 0.0f, &b2_world);
+  auto player = game::Player::randomGeneration(&b2_world, random);
+  world.addEntity(player, game::Memory::FROM_STACK);
+
+
+
 
   //a static body
   b2BodyDef boundaryDef;
@@ -155,10 +156,14 @@ int main() {
 #endif // 0
 
   sf::Font *font = manager.getFont("arial.ttf");
-  player.getScore()->setFont(font);
+  player->getScore()->setFont(font);
+  player->getLevel()->setFont(font);
+
+  game::Clock clockElapsed;
+  clockElapsed.setFont(font);
 
   for (int i = 0; i < ENTITIES_NUMBER; i++) {
-    auto elt = game::Element::randomGeneration(&b2_world, random);
+    auto elt = game::Element::randomGeneration(&b2_world, random, player->getElementType(), player->getLevel());
     world.addEntity(elt, game::Memory::FROM_HEAP);
   }
 
@@ -166,7 +171,7 @@ int main() {
   sf::Clock clock;
   while (window.isOpen()) {
     if (ENTITIES_NUMBER + 1 > b2_world.GetBodyCount()) {
-      auto elt = game::Element::randomGeneration(&b2_world, random);
+      auto elt = game::Element::randomGeneration(&b2_world, random,  player->getElementType(), player->getLevel());
       world.addEntity(elt, game::Memory::FROM_HEAP);
     }
 
@@ -231,20 +236,21 @@ int main() {
 
     float vmax = sqrt(vx * vx + vy * vy);
     if (vmax > 1e-4) {
-      vx = PLAYER_SPEED * vx / vmax;
-      vy = PLAYER_SPEED * vy / vmax;
+      vx = PLAYER_SPEED * vx *2/ vmax;
+      vy = PLAYER_SPEED * vy *2/ vmax;
     } else {
       vx = 0.0f;
       vy = 0.0f;
     }
 
-    player.move(vx, vy);
+    player->move(vx, vy);
 
     // update
     sf::Time elapsed = clock.restart();
     float dt = elapsed.asSeconds();
     b2_world.Step(dt, velocity_iterations, position_iterations);
     world.update(dt);
+    clockElapsed.update(dt);
 
     // render main view
     window.clear(sf::Color::White);
@@ -254,7 +260,9 @@ int main() {
 
     //Render secondary view
     window.setView(secondary_view);
-    player.getScore()->render(window);
+    clockElapsed.render(window);
+    player->getScore()->render(window);
+    player->getLevel()->render(window);
 
 
     window.display();

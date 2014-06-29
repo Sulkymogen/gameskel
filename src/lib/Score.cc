@@ -2,7 +2,9 @@
 
 namespace game {
   Score::Score() :
-  m_score(0){
+  m_score(0)
+  , m_upScore(ScoreStatus::IDDLE)
+  , m_factor(1){
     
   }
   
@@ -11,13 +13,29 @@ namespace game {
   }
   
   void Score::increaseScore(void){
-    m_score+= 100;
-    return;
+    //si on enchaine des ennemies
+    if(m_upScore == ScoreStatus::UP){
+      m_factor++;
+    }
+    else{
+      m_upScore = ScoreStatus::UP;
+      m_factor = 1;
+    }
+    
+     m_score+= m_factor*100;
   }
   
   void Score::decreaseScore(void){
-    m_score-= 100;
-    return;
+    //si on enchaine des ennemies
+    if(m_upScore == ScoreStatus::DOWN){
+      m_factor++;
+    }
+    else{
+      m_upScore = ScoreStatus::DOWN;
+      m_factor = 1;
+    }
+    
+    m_score-= m_factor*100;
   }
   
   
@@ -28,6 +46,14 @@ namespace game {
     text.setCharacterSize(24);
     text.setColor(sf::Color::Black);
     
+    window.draw(text);
+    
+    if(m_upScore == ScoreStatus::UP || m_upScore == ScoreStatus::IDDLE)
+      text.setString("Combo: x"+std::to_string(m_factor));
+    else
+      text.setString("Combo: x-"+std::to_string(m_factor));
+    
+    text.setPosition(0, 90);
     window.draw(text);
   }
   
