@@ -56,9 +56,10 @@ namespace game {
 
   class ParticleEmitter {
   public:
-    ParticleEmitter(Random& random, float emission_rate)
+    ParticleEmitter(Random& random, float emission_rate, float duration)
     : m_random(random)
     , m_emission_rate(emission_rate)
+    , m_duration(duration)
     {
     }
 
@@ -100,6 +101,7 @@ namespace game {
     Random& m_random;
     float m_emission_rate;
     float m_emission_difference = 0.0f;
+    float m_duration;
     Distribution<sf::Vector2f> m_position;
     Distribution<sf::Vector2f> m_velocity;
     Distribution<float> m_angle;
