@@ -176,7 +176,20 @@ namespace game {
       shape.setRadius(24.0f);
       shape.setOrigin(8.5f, 8.5f);
       shape.setPosition(pos.x,pos.y);
-      shape.setFillColor(sf::Color(0,0,0,150));
+      
+      sf::Color color;
+      switch(m_type){
+      case game::ElementType::PAPER: // warrior
+	color = sf::Color(0x00, 0x80, 0xFF);
+	break;
+      case game::ElementType::ROCK: // tiger
+	color = sf::Color(0x03A, 0xDF, 0x00);
+	break;
+      case game::ElementType::SCISSORS: // mother
+	color = sf::Color(0xDF, 0x01, 0xD7);
+	break;
+      }
+      shape.setFillColor(color);
       window.draw(shape);
     }
 
