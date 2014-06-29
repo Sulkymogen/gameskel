@@ -45,13 +45,21 @@ int main() {
   sf::Sprite menu_bg_sprite;
   menu_bg_sprite.setPosition(0, 0);
   menu_bg_sprite.setTexture(* menu_bg);
-
-  sf::Texture * menu_jouer = manager.getTexture("jouer.png");
+  
+  
+  sf::Texture * menu_logo = manager.getTexture("guerrier-tigre-maman-transparent.png");
+  sf::Sprite menu_logo_sprite;
+  menu_logo_sprite.setPosition(10, 10);
+  menu_logo_sprite.setScale(0.40f, 0.40f);
+  menu_logo_sprite.setTexture(* menu_logo);
+  
+  
+  sf::Texture * menu_jouer = manager.getTexture("jouer2.png");
   sf::Sprite menu_jouer_sprite;
   menu_jouer_sprite.setPosition(100, 350);
   menu_jouer_sprite.setTexture(* menu_jouer);
-
-  sf::Texture * menu_quitter = manager.getTexture("quitter.png");
+  
+  sf::Texture * menu_quitter = manager.getTexture("quitter2.png");
   sf::Sprite menu_quitter_sprite;
   menu_quitter_sprite.setPosition(100, 500);
   menu_quitter_sprite.setTexture(* menu_quitter);
@@ -92,6 +100,7 @@ int main() {
     menu.draw(menu_bg_sprite);
     menu.draw(menu_jouer_sprite);
     menu.draw(menu_quitter_sprite);
+    menu.draw(menu_logo_sprite);
     menu.display();
 
   } // menu isOpen
@@ -99,6 +108,8 @@ int main() {
 
 
   if (play) {
+    float ghost_time = GHOST_TIME;
+    
     bool play_with_mouse = true;
     //
     // Game
@@ -210,6 +221,8 @@ int main() {
     game::Element::tiger->setSmooth(true);
     game::Element::mother=manager.getTexture("mother.png");
     game::Element::mother->setSmooth(true);
+    game::Element::bonus=manager.getTexture("bonus.jpeg");
+    game::Element::bonus->setSmooth(true);
 
   #if 0
     sf::Texture *background = manager.getTexture("background.jpg");
@@ -230,11 +243,6 @@ int main() {
 
     game::Clock clockElapsed;
     clockElapsed.setFont(font);
-
-    for (int i = 0; i < ENTITIES_NUMBER; i++) {
-      auto elt = game::Element::randomGeneration(&b2_world, random, player->getElementType(), player->getLevel());
-      world.addEntity(elt, game::Memory::FROM_HEAP);
-    }
 
     // main loop
     sf::Clock clock;
@@ -335,6 +343,13 @@ int main() {
       window.draw(bgsprite);
       world.render(window);
 
+      if (player->isGhost() && ghost_time > 0.0f) {
+      ghost_time = ghost_time - dt;
+      } else {
+	ghost_time = GHOST_TIME;
+	player->setState(game::ElementState::ALIVE);
+      }
+    
       //Render secondary view
       window.setView(secondary_view);
       

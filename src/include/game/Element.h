@@ -13,10 +13,12 @@ namespace game {
     PAPER,
     ROCK,
     SCISSORS,
+    BONUS,
   };
 
   enum class ElementState {
     ALIVE,
+    GHOST,
     DEAD,
   };
 
@@ -40,17 +42,21 @@ namespace game {
     ElementType getElementType (void) const;
     b2Body * getBody (void) const;
     bool isPlayer(void);
+    bool isGhost(void) const;
+    void setState(ElementState state);
 
   protected:
     void setFunction (ElementFunction function);
     b2Vec2 getLinearVelocity (void) const;
     void setLinearVelocity (float vx, float vy);
     void setFilter(uint16 categoryBits, uint16 maskBits);
+    void setRectShape(float x, float y);
 
   public:
     static sf::Texture * warrior;
     static sf::Texture * mother;
     static sf::Texture * tiger;
+    static sf::Texture * bonus;
 
   private:
     ElementType m_type;
