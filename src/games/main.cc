@@ -28,12 +28,14 @@
 
 #include "config.h"
 
-#define ENTITIES_NUMBER 15
+#define ENTITIES_NUMBER 1
 
 int main() {
   // initialize
   std::random_device dev;
   game::Random random(dev());
+  
+  float mouse_factor = (SCREEN_HEIGHT-100.0f)/(SCREEN_HEIGHT);
 
   b2Vec2 b2_gravity(0.0f, 0.0f);
   b2World b2_world(b2_gravity);
@@ -184,11 +186,8 @@ int main() {
       vx += PLAYER_SPEED;
     }
     
-    //vx = sf::Mouse::getPosition().x - 300.0f - b2_world.GetBodyList()->GetPosition().x;
-    //vy = sf::Mouse::getPosition().y - 300.0f - b2_world.GetBodyList()->GetPosition().y;
-    //std::cout << "Mouse X : " << sf::Mouse::getPosition().x << std::endl;
-    //std::cout << "Mouse y : " << sf::Mouse::getPosition().y << std::endl;
-    
+    vx = (sf::Mouse::getPosition(window).x - SCREEN_HEIGHT/2) * mouse_factor - 15.0f - player.getBody()->GetPosition().x;
+    vy = (sf::Mouse::getPosition(window).y - SCREEN_HEIGHT/2) * mouse_factor - 15.0f - player.getBody()->GetPosition().y;
     
     float vmax = sqrt(vx*vx+vy*vy);
     if (0 != vmax)
@@ -214,7 +213,6 @@ int main() {
     //Render secondary view
     window.setView(secondary_view);
     player.getScore()->render(window);
-
 
     window.display();
   }

@@ -198,6 +198,10 @@ namespace game {
   ElementType Element::getElementType(void) const {
     return m_type;
   }
+  
+  b2Body * Element::getBody (void) const {
+    return m_body;
+  }
 
   sf::Texture * Element::warrior;
     sf::Texture * Element::mother;
