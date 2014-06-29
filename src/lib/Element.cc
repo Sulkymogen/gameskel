@@ -28,7 +28,7 @@ namespace game {
     b2FixtureDef fixture;
     fixture.shape = &circle;
     fixture.density = 1.0f;
-    fixture.friction = 0.1f;
+    fixture.friction = 0.05f;
     fixture.restitution = 1.0f;
     fixture.filter.categoryBits = static_cast<uint16>(ElementFunction::ENEMY);
     fixture.filter.maskBits = static_cast<uint16>(ElementFunction::ENEMY|ElementFunction::PLAYER);
@@ -153,11 +153,13 @@ namespace game {
 
   void Element::render(sf::RenderWindow& window) {
     auto pos = m_body->GetPosition();
+    auto angle = m_body->GetAngle();
 
     sf::Sprite sprite;
-    sprite.setScale(ELEMENT_SIZE/90,ELEMENT_SIZE/90);
-    sprite.setOrigin(ELEMENT_SIZE, ELEMENT_SIZE);
+    sprite.setOrigin(4.5f * ELEMENT_SIZE, 4.5f * ELEMENT_SIZE);
+    sprite.setScale(ELEMENT_SIZE / 90.0f, ELEMENT_SIZE / 90.0f);
     sprite.setPosition(pos.x, pos.y);
+    sprite.setRotation(angle * 180 / M_PI);
 
     switch(m_type){
     case ElementType::PAPER:
@@ -174,9 +176,22 @@ namespace game {
     if (m_function == ElementFunction::PLAYER) {
       sf::CircleShape shape;
       shape.setRadius(24.0f);
-      shape.setOrigin(9.0f, 9.0f);
+      shape.setOrigin(24.0f, 24.0f);
       shape.setPosition(pos.x,pos.y);
-      shape.setFillColor(sf::Color(0,0,0,150));
+
+      sf::Color color;
+      switch(m_type){
+      case game::ElementType::PAPER: // warrior
+	color = sf::Color(0x00, 0x80, 0xFF);
+	break;
+      case game::ElementType::ROCK: // tiger
+	color = sf::Color(0x03A, 0xDF, 0x00);
+	break;
+      case game::ElementType::SCISSORS: // mother
+	color = sf::Color(0xDF, 0x01, 0xD7);
+	break;
+      }
+      shape.setFillColor(color);
       window.draw(shape);
     }
 
@@ -231,7 +246,7 @@ namespace game {
   ElementType Element::getElementType(void) const {
     return m_type;
   }
-  
+
   b2Body * Element::getBody (void) const {
     return m_body;
   }

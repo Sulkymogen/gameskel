@@ -4,6 +4,9 @@
 #define SCREEN_WIDTH 1024
 #define SCREEN_HEIGHT 700
 
+#define MENU_WIDTH 500
+#define MENU_HEIGHT 700
+
 #define PLAYER_SPEED 50.0f
 
 #define ELEMENT_SIZE 20.0f

@@ -2,7 +2,7 @@
 
 namespace game {
   Level::Level() :
-    m_level(0){
+    m_level(1){
   }
   
   int Level::getLevel() const{
@@ -25,6 +25,8 @@ namespace game {
   }
 
   void Level::setLevel(int l){
+    if(l<1)
+      l=1;
     m_level= l;
     return;
   }
