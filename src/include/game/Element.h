@@ -50,7 +50,6 @@ namespace game {
     b2Vec2 getLinearVelocity (void) const;
     void setLinearVelocity (float vx, float vy);
     void setFilter(uint16 categoryBits, uint16 maskBits);
-    void setRectShape(float x, float y);
 
   public:
     static sf::Texture * warrior;
