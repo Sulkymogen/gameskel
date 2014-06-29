@@ -99,6 +99,7 @@ int main() {
 
 
   if (play) {
+    bool play_with_mouse = true;
     //
     // Game
 
@@ -255,9 +256,15 @@ int main() {
               window.close();
               break;
 
+            case sf::Keyboard::Space:
+              play_with_mouse = !play_with_mouse;
+              break;
+
             default:
               break;
           }
+        } else if (event.type == sf::Event::MouseButtonPressed) {
+          play_with_mouse = !play_with_mouse;
         }
 
       }
@@ -280,27 +287,29 @@ int main() {
       float vx = 0.0f;
       float vy = 0.0f;
 
-      if(sf::Keyboard::isKeyPressed(sf::Keyboard::Up)){
-        vy -= PLAYER_SPEED;
+      if (play_with_mouse) {
+        auto mouse_position = sf::Mouse::getPosition(window);
+        auto mouse_world_position = window.mapPixelToCoords(mouse_position, main_view);
+
+        vx = mouse_world_position.x - player->getBody()->GetPosition().x;
+        vy = mouse_world_position.y - player->getBody()->GetPosition().y;
+      } else {
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::Up)){
+          vy -= PLAYER_SPEED;
+        }
+
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::Down)){
+          vy += PLAYER_SPEED;
+        }
+
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::Left)){
+          vx -= PLAYER_SPEED;
+        }
+
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::Right)){
+          vx += PLAYER_SPEED;
+        }
       }
-
-      if(sf::Keyboard::isKeyPressed(sf::Keyboard::Down)){
-        vy += PLAYER_SPEED;
-      }
-
-      if(sf::Keyboard::isKeyPressed(sf::Keyboard::Left)){
-        vx -= PLAYER_SPEED;
-      }
-
-      if(sf::Keyboard::isKeyPressed(sf::Keyboard::Right)){
-        vx += PLAYER_SPEED;
-      }
-
-      auto mouse_position = sf::Mouse::getPosition(window);
-      auto mouse_world_position = window.mapPixelToCoords(mouse_position, main_view);
-
-      vx = mouse_world_position.x - player->getBody()->GetPosition().x;
-      vy = mouse_world_position.y - player->getBody()->GetPosition().y;
 
       float vmax = sqrt(vx * vx + vy * vy);
       if (vmax > 1e-4) {
