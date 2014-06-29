@@ -7,6 +7,7 @@
 #include <game/Level.h>
 
 namespace game {
+  class World;
 
   enum class ElementType {
     PAPER,
@@ -57,6 +58,8 @@ namespace game {
     b2Body * m_body;
     ElementFunction m_function;
 
+  public:
+    static World *world;
   };
 
 }

@@ -13,6 +13,8 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
+#include <iostream>
+
 #include <game/World.h>
 #include <game/Element.h>
 #include <game/Random.h>
@@ -20,8 +22,9 @@
 #include <game/Player.h>
 #include <game/WorldListener.h>
 #include <game/Param.h>
+#include <game/Events.h>
+#include <game/Particle.h>
 #include <game/Clock.h>
-#include <iostream>
 
 #include <Box2D/Box2D.h>
 
@@ -38,6 +41,45 @@ int main() {
   b2World b2_world(b2_gravity);
 
   game::World world;
+  game::Element::world = &world;
+
+
+  world.registerHandler<game::DeadEvent>([&random, &world](game::Entity *entity, game::EventType type, game::Event *event) {
+    game::DeadEvent *dead_event = static_cast<game::DeadEvent*>(event);
+
+    auto emitter = new game::ParticleEmitter(random, 300, 0.15);
+    emitter->setPosition(game::Distributions::constantDistribution({ dead_event->where.x, dead_event->where.y }));
+    emitter->setVelocity(game::Distributions::diskDistribution({ 0.0f, 0.0f }, 300));
+
+    sf::Color color;
+
+    switch (dead_event->what) {
+    case game::ElementType::PAPER: // warrior
+      color = sf::Color(0x00, 0x80, 0xFF);
+      break;
+    case game::ElementType::ROCK: // tiger
+      color = sf::Color(0x00, 0xFF, 0x00);
+      break;
+    case game::ElementType::SCISSORS: // mother
+      color = sf::Color(0xFF, 0x00, 0xBF);
+      break;
+    }
+
+    emitter->setColor(game::Distributions::constantDistribution(color));
+    emitter->setRadius(game::Distributions::uniformDistribution(1.0f, 2.0f));
+    emitter->setPoints(game::Distributions::uniformDistribution(20u, 30u));
+
+    emitter->setLifetime(game::Distributions::uniformDistribution(0.1f, 0.2f));
+
+    auto system = new game::ParticleSystem;
+    system->addEmitter(emitter);
+    system->addAffector(game::Affectors::fadingAffector(0.2));
+
+    world.addEntity(system, game::Memory::FROM_HEAP);
+
+    return game::EventStatus::KEEP;
+  });
+
   sf::RenderWindow window(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT), GAME_NAME " (version " GAME_VERSION ")", sf::Style::Titlebar|sf::Style::Close);
   window.setKeyRepeatEnabled(false);
 
@@ -61,7 +103,7 @@ int main() {
   auto player = game::Player::randomGeneration(&b2_world, random);
   world.addEntity(player, game::Memory::FROM_STACK);
 
- 
+
 
 
   //a static body
@@ -118,7 +160,7 @@ int main() {
   sf::Font *font = manager.getFont("arial.ttf");
   player->getScore()->setFont(font);
   player->getLevel()->setFont(font);
-  
+
   game::Clock clockElapsed;
   clockElapsed.setFont(font);
 
