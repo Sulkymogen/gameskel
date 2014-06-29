@@ -15,6 +15,7 @@ namespace game {
     int getScore() const;
     
     void increaseScore(void);
+    void increaseScore(int value);
     void decreaseScore(void);
     
     virtual void render(sf::RenderWindow& window);

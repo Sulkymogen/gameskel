@@ -205,6 +205,8 @@ namespace game {
       case game::ElementType::SCISSORS: // mother
 	color = sf::Color(0xDF, 0x01, 0xD7);
 	break;
+      default:
+	break;
       }
       shape.setFillColor(color);
       window.draw(shape);
@@ -255,26 +257,6 @@ namespace game {
       filter.maskBits = maskBits;
 
       fixture->SetFilterData(filter);
-    }
-  }
-
-  void Element::setRectShape(float x, float y){
-    for(b2Fixture *fixture = m_body->GetFixtureList(); fixture != nullptr; fixture = fixture->GetNext()) {
-
-  //shape definition
-    b2PolygonShape polygonShape;
-
-    //fixture definition
-    b2FixtureDef fixtureDef;
-    fixtureDef.shape = &polygonShape;
-    fixtureDef.filter.categoryBits = game::ElementFunction::BOUNDARY;
-    fixtureDef.filter.maskBits = game::ElementFunction::PLAYER | game::ElementFunction::ENEMY | game::ElementFunction::BOUNDARY;
-
-    //add four walls to the static body
-    polygonShape.SetAsBox( 20, 20, b2Vec2(x, y),0);//ground
-    //staticBody->CreateFixture(&fixtureDef);
-    //fixture->shape = &polygonShape;
-
     }
   }
 

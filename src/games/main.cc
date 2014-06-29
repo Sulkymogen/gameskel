@@ -168,6 +168,9 @@ int main() {
       case game::ElementType::SCISSORS: // mother
         color = sf::Color(0xFF, 0x00, 0xBF);
         break;
+      case game::ElementType::BONUS:
+	color = sf::Color(0xFF, 0x80, 0x00);
+        break;
       }
 
       emitter->setColor(game::Distributions::constantDistribution(color));
@@ -432,6 +435,12 @@ int main() {
       logo_sprite.setScale(0.30f, 0.30f);
       logo_sprite.setTexture(* menu_logo);
       window.draw(logo_sprite);
+
+      sf::Sprite name_sprite;
+      name_sprite.setPosition(5, 0);
+      name_sprite.setScale(0.65f, 0.65f);
+      name_sprite.setTexture(* menu_name);
+      window.draw(name_sprite);
 
       clockElapsed.render(window);
       player->getScore()->render(window);
