@@ -1,5 +1,5 @@
 #include <game/Element.h>
-
+#include <game/Bonus.h>
 #include <cassert>
 #include <cmath>
 
@@ -46,7 +46,7 @@ namespace game {
 
   Element *Element::randomGeneration(b2World *world, Random& m_random, ElementType player_type, Level * lv) {
     Distribution<unsigned> axis_dist = game::Distributions::uniformDistribution (0u, 3u);
-    Distribution<unsigned> type_dist = game::Distributions::uniformDistribution (0u, 9u);
+    Distribution<unsigned> type_dist = game::Distributions::uniformDistribution (0u, 19u);
     Distribution<unsigned> coef_dist = game::Distributions::uniformDistribution (50u, 50u + 2 * (int)ELEMENT_SIZE);
     Distribution<float> value_dist = game::Distributions::uniformDistribution (-320.0f - ELEMENT_SIZE, 320.0f + ELEMENT_SIZE);
     Distribution<float> cible_dist = game::Distributions::uniformDistribution (-320.0f, 320.0f);
@@ -119,19 +119,31 @@ namespace game {
     switch (type) {
     case 0:
     case 1:
-      elt = new Element(player_type, x, y, vx, vy, world);
-      break;
     case 2:
     case 3:
+      elt = new Element(player_type, x, y, vx, vy, world);
+      break;
     case 4:
     case 5:
     case 6:
+    case 7:
+    case 8:
+    case 9:
+    case 10:
+    case 11:
+    case 12:
+    case 13:
       elt = new Element(hunter, x, y, vx, vy, world);
       break;
-    case 7 :
-    case 8 :
-    case 9 :
+    case 14 :
+    case 15 :
+    case 16 :
+    case 17:
+    case 18:
       elt = new Element(target, x, y, vx, vy, world);
+      break;
+    case 19:
+      elt = new Bonus(x, y, vx, vy, world);
       break;
     default :
       assert(false);
@@ -170,6 +182,9 @@ namespace game {
       break;
     case ElementType::SCISSORS:
       sprite.setTexture(*mother);
+      break;
+    case ElementType::BONUS:
+      sprite.setTexture(*bonus);
       break;
     }
 
@@ -243,6 +258,26 @@ namespace game {
     }
   }
 
+  void Element::setRectShape(float x, float y){
+    for(b2Fixture *fixture = m_body->GetFixtureList(); fixture != nullptr; fixture = fixture->GetNext()) { 
+
+  //shape definition
+    b2PolygonShape polygonShape;
+
+    //fixture definition
+    b2FixtureDef fixtureDef;
+    fixtureDef.shape = &polygonShape;
+    fixtureDef.filter.categoryBits = game::ElementFunction::BOUNDARY;
+    fixtureDef.filter.maskBits = game::ElementFunction::PLAYER | game::ElementFunction::ENEMY | game::ElementFunction::BOUNDARY;
+
+    //add four walls to the static body
+    polygonShape.SetAsBox( 20, 20, b2Vec2(x, y),0);//ground
+    //staticBody->CreateFixture(&fixtureDef);
+    //fixture->shape = &polygonShape;
+
+    }
+  }
+
   ElementType Element::getElementType(void) const {
     return m_type;
   }
@@ -254,6 +289,7 @@ namespace game {
   sf::Texture * Element::warrior;
   sf::Texture * Element::mother;
   sf::Texture * Element::tiger;
+  sf::Texture * Element::bonus;
 
   World *Element::world = nullptr;
 

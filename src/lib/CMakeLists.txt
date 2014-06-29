@@ -4,6 +4,7 @@ include_directories(${BOX2D_INCLUDE_DIR})
 
 set(LIBGAME0_SRC
   Animation.cc
+  Bonus.cc
   Clock.cc
   Element.cc
   Entity.cc
