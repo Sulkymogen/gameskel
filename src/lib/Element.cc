@@ -46,7 +46,7 @@ namespace game {
 
   Element *Element::randomGeneration(b2World *world, Random& m_random, ElementType player_type, Level * lv) {
     Distribution<unsigned> axis_dist = game::Distributions::uniformDistribution (0u, 3u);
-    Distribution<unsigned> type_dist = game::Distributions::uniformDistribution (0u, 9u);
+    Distribution<unsigned> type_dist = game::Distributions::uniformDistribution (0u, 19u);
     Distribution<unsigned> coef_dist = game::Distributions::uniformDistribution (5u, 5u + 2 * (int)ELEMENT_SIZE);
     Distribution<float> value_dist = game::Distributions::uniformDistribution (-32.0f - ELEMENT_SIZE, 32.0f + ELEMENT_SIZE);
     Distribution<float> cible_dist = game::Distributions::uniformDistribution (-32.0f, 32.0f);
