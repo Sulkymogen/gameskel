@@ -46,6 +46,14 @@ int main() {
   menu_bg_sprite.setPosition(0, 0);
   menu_bg_sprite.setTexture(* menu_bg);
   
+  
+  sf::Texture * menu_logo = manager.getTexture("guerrier-tigre-maman-transparent.png");
+  sf::Sprite menu_logo_sprite;
+  menu_logo_sprite.setPosition(10, 10);
+  menu_logo_sprite.setScale(0.40f, 0.40f);
+  menu_logo_sprite.setTexture(* menu_logo);
+  
+  
   sf::Texture * menu_jouer = manager.getTexture("jouer2.png");
   sf::Sprite menu_jouer_sprite;
   menu_jouer_sprite.setPosition(100, 350);
@@ -92,6 +100,7 @@ int main() {
     menu.draw(menu_bg_sprite);
     menu.draw(menu_jouer_sprite);
     menu.draw(menu_quitter_sprite);
+    menu.draw(menu_logo_sprite);
     menu.display();
 
   } // menu isOpen
