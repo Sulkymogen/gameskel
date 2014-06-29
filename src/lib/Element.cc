@@ -203,7 +203,7 @@ namespace game {
 	color = sf::Color(0x03A, 0xDF, 0x00);
 	break;
       case game::ElementType::SCISSORS: // mother
-	color = sf::Color(0xDF, 0x01, 0xD7);
+	color = sf::Color(0xFF, 0x40, 0x00);
 	break;
       default:
 	break;

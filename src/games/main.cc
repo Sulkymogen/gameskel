@@ -166,10 +166,10 @@ int main() {
         color = sf::Color(0x00, 0xFF, 0x00);
         break;
       case game::ElementType::SCISSORS: // mother
-        color = sf::Color(0xFF, 0x00, 0xBF);
-        break;
-      case game::ElementType::BONUS:
 	color = sf::Color(0xFF, 0x80, 0x00);
+        break;
+      case game::ElementType::BONUS: //bonus
+        color = sf::Color(0xFF, 0x00, 0xBF);
         break;
       }
 
@@ -190,7 +190,7 @@ int main() {
       return game::EventStatus::KEEP;
     });
 
-    sf::RenderWindow window(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT), GAME_NAME " (version " GAME_VERSION ")", sf::Style::Titlebar|sf::Style::Close);
+    sf::RenderWindow window(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT), "The Game With No Name (version " GAME_VERSION ")", sf::Style::Titlebar|sf::Style::Close);
     window.setKeyRepeatEnabled(false);
 
     float ratio = static_cast<float>(SCREEN_HEIGHT) / static_cast<float>(SCREEN_WIDTH);
