@@ -20,12 +20,10 @@
 #include <game/Player.h>
 #include <game/WorldListener.h>
 #include <game/Param.h>
+#include <game/Clock.h>
 #include <iostream>
 
 #include <Box2D/Box2D.h>
-
-#include <iostream>
-#include <game/Param.h>
 
 #include "config.h"
 
@@ -113,6 +111,9 @@ int main() {
 
   sf::Font *font = manager.getFont("arial.ttf");
   player.getScore()->setFont(font);
+  
+  game::Clock clockElapsed;
+  clockElapsed.setFont(font);
 
   for (int i = 0; i < ENTITIES_NUMBER; i++) {
     auto elt = game::Element::randomGeneration(&b2_world, random);
@@ -202,6 +203,7 @@ int main() {
     float dt = elapsed.asSeconds();
     b2_world.Step(dt, velocity_iterations, position_iterations);
     world.update(dt);
+    clockElapsed.update(dt);
 
     // render main view
     window.clear(sf::Color::White);
@@ -212,6 +214,7 @@ int main() {
     //Render secondary view
     window.setView(secondary_view);
     player.getScore()->render(window);
+    clockElapsed.render(window);
 
 
     window.display();
