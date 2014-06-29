@@ -117,9 +117,10 @@ int main() {
 
   sf::Font *font = manager.getFont("arial.ttf");
   player->getScore()->setFont(font);
+  player->getLevel()->setFont(font);
 
   for (int i = 0; i < ENTITIES_NUMBER; i++) {
-    auto elt = game::Element::randomGeneration(&b2_world, random, player->getElementType());
+    auto elt = game::Element::randomGeneration(&b2_world, random, player->getElementType(), player->getLevel());
     world.addEntity(elt, game::Memory::FROM_HEAP);
   }
 
@@ -127,7 +128,7 @@ int main() {
   sf::Clock clock;
   while (window.isOpen()) {
     if (ENTITIES_NUMBER + 1 > b2_world.GetBodyCount()) {
-      auto elt = game::Element::randomGeneration(&b2_world, random,  player->getElementType());
+      auto elt = game::Element::randomGeneration(&b2_world, random,  player->getElementType(), player->getLevel());
       world.addEntity(elt, game::Memory::FROM_HEAP);
     }
 
@@ -192,8 +193,8 @@ int main() {
 
     float vmax = sqrt(vx * vx + vy * vy);
     if (vmax > 1e-4) {
-      vx = PLAYER_SPEED * vx / vmax;
-      vy = PLAYER_SPEED * vy / vmax;
+      vx = PLAYER_SPEED * vx *2/ vmax;
+      vy = PLAYER_SPEED * vy *2/ vmax;
     } else {
       vx = 0.0f;
       vy = 0.0f;
@@ -216,6 +217,7 @@ int main() {
     //Render secondary view
     window.setView(secondary_view);
     player->getScore()->render(window);
+    player->getLevel()->render(window);
 
 
     window.display();

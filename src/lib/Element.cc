@@ -26,8 +26,8 @@ namespace game {
     b2FixtureDef fixture;
     fixture.shape = &circle;
     fixture.density = 1.0f;
-    fixture.friction = 0.3f;
-    fixture.restitution = 0.9f;
+    fixture.friction = 0.1f;
+    fixture.restitution = 1.0f;
     fixture.filter.categoryBits = static_cast<uint16>(ElementFunction::ENEMY);
     fixture.filter.maskBits = static_cast<uint16>(ElementFunction::ENEMY|ElementFunction::PLAYER);
 
@@ -42,7 +42,7 @@ namespace game {
     world->DestroyBody(m_body);
   }
 
-  Element *Element::randomGeneration(b2World *world, Random& m_random, ElementType player_type) {
+  Element *Element::randomGeneration(b2World *world, Random& m_random, ElementType player_type, Level * lv) {
     Distribution<unsigned> axis_dist = game::Distributions::uniformDistribution (0u, 3u);
     Distribution<unsigned> type_dist = game::Distributions::uniformDistribution (0u, 9u);
     Distribution<unsigned> coef_dist = game::Distributions::uniformDistribution (50u, 50u + 2 * (int)ELEMENT_SIZE);
@@ -86,8 +86,8 @@ namespace game {
 
     float v_coef = coef / std::sqrt(dx*dx+dy*dy);
 
-    float vx = v_coef * dx;
-    float vy = v_coef * dy;
+    float vx = v_coef * dx * (lv->getLevel()*2+1);
+    float vy = v_coef * dy * (lv->getLevel()*2+1);
 
     Element *elt = nullptr;
 
@@ -226,4 +226,6 @@ namespace game {
   sf::Texture * Element::warrior;
   sf::Texture * Element::mother;
   sf::Texture * Element::tiger;
+
+
 }

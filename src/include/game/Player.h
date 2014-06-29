@@ -17,9 +17,11 @@ namespace game {
     void move(float vx, float vy);
     
     Score *getScore();
+    Level *getLevel();
 
   private:
     Score *m_score;
+    Level *m_level;
   };
 }
 

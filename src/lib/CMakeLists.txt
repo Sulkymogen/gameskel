@@ -6,6 +6,7 @@ set(LIBGAME0_SRC
   Animation.cc
   Element.cc
   Entity.cc
+  Level.cc
   Particle.cc
   Player.cc
   Random.cc

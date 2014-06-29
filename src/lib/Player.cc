@@ -5,7 +5,7 @@ namespace game {
 
   Player::Player(ElementType type, float x, float y, b2World *world)
     : Element(type, x, y, 0.0f, 0.0f, world)
-    , m_score(new Score())
+    , m_score(new Score()), m_level(new Level())
   {
     setFunction(ElementFunction::PLAYER);
     setFilter(ElementFunction::PLAYER, ElementFunction::ENEMY|ElementFunction::PLAYER|ElementFunction::BOUNDARY);
@@ -43,6 +43,10 @@ Player *Player::randomGeneration(b2World *world, Random& m_random) {
   
   Score *Player::getScore(){
     return m_score;
+  }
+
+  Level *Player::getLevel(){
+    return m_level;
   }
   
 }
