@@ -38,7 +38,7 @@ namespace game {
     text.setString("Level: "+std::to_string(m_level));
     text.setCharacterSize(24);
     text.setColor(sf::Color::Black);
-    text.setPosition(0,30);
+    text.setPosition(100,190);
     
     window.draw(text);
   }
