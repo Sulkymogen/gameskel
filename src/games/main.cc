@@ -38,10 +38,10 @@ int main() {
 
   //
   // Menu
-  sf::RenderWindow menu(sf::VideoMode(MENU_WIDTH, MENU_HEIGHT), GAME_NAME " (version " GAME_VERSION ")", sf::Style::Titlebar|sf::Style::Close);
+  sf::RenderWindow menu(sf::VideoMode(MENU_WIDTH, MENU_HEIGHT), "The Game With No Name (version " GAME_VERSION ")", sf::Style::Titlebar|sf::Style::Close);
   menu.setKeyRepeatEnabled(false);
 
-  sf::Texture * menu_bg = manager.getTexture("menu_bg.png");
+  sf::Texture * menu_bg = manager.getTexture("menu_bg2.png");
   sf::Sprite menu_bg_sprite;
   menu_bg_sprite.setPosition(0, 0);
   menu_bg_sprite.setTexture(* menu_bg);
@@ -49,19 +49,26 @@ int main() {
   
   sf::Texture * menu_logo = manager.getTexture("guerrier-tigre-maman-transparent.png");
   sf::Sprite menu_logo_sprite;
-  menu_logo_sprite.setPosition(10, 10);
+  menu_logo_sprite.setPosition(10, 0);
   menu_logo_sprite.setScale(0.40f, 0.40f);
   menu_logo_sprite.setTexture(* menu_logo);
   
+  sf::Texture * menu_name = manager.getTexture("game_name_penguin.png");
+  sf::Sprite menu_name_sprite;
+  menu_name_sprite.setPosition(25, 285);
+  menu_name_sprite.setScale(0.90f, 0.90f);
+  menu_name_sprite.setTexture(* menu_name);
   
-  sf::Texture * menu_jouer = manager.getTexture("jouer2.png");
+  sf::Texture * menu_jouer = manager.getTexture("jouer2_2.png");
   sf::Sprite menu_jouer_sprite;
-  menu_jouer_sprite.setPosition(100, 350);
+  menu_jouer_sprite.setPosition(130, 490);
+  menu_jouer_sprite.setScale(0.80f, 0.80f);
   menu_jouer_sprite.setTexture(* menu_jouer);
   
   sf::Texture * menu_quitter = manager.getTexture("quitter2.png");
   sf::Sprite menu_quitter_sprite;
-  menu_quitter_sprite.setPosition(100, 500);
+  menu_quitter_sprite.setPosition(130, 580);
+  menu_quitter_sprite.setScale(0.80f, 0.80f);
   menu_quitter_sprite.setTexture(* menu_quitter);
 
   bool play = false;
@@ -101,6 +108,7 @@ int main() {
     menu.draw(menu_jouer_sprite);
     menu.draw(menu_quitter_sprite);
     menu.draw(menu_logo_sprite);
+    menu.draw(menu_name_sprite);
     menu.display();
 
   } // menu isOpen
