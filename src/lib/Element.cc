@@ -26,8 +26,8 @@ namespace game {
     b2FixtureDef fixture;
     fixture.shape = &circle;
     fixture.density = 1.0f;
-    fixture.friction = 0.3f;
-    fixture.restitution = 0.9f;
+    fixture.friction = 0.1f;
+    fixture.restitution = 1.0f;
     fixture.filter.categoryBits = static_cast<uint16>(ElementFunction::ENEMY);
     fixture.filter.maskBits = static_cast<uint16>(ElementFunction::ENEMY|ElementFunction::PLAYER);
 
@@ -42,7 +42,7 @@ namespace game {
     world->DestroyBody(m_body);
   }
 
-  Element *Element::randomGeneration(b2World *world, Random& m_random) {
+  Element *Element::randomGeneration(b2World *world, Random& m_random, ElementType player_type, Level * lv) {
     Distribution<unsigned> axis_dist = game::Distributions::uniformDistribution (0u, 3u);
     Distribution<unsigned> type_dist = game::Distributions::uniformDistribution (0u, 9u);
     Distribution<unsigned> coef_dist = game::Distributions::uniformDistribution (50u, 50u + 2 * (int)ELEMENT_SIZE);
@@ -86,27 +86,50 @@ namespace game {
 
     float v_coef = coef / std::sqrt(dx*dx+dy*dy);
 
-    float vx = v_coef * dx;
-    float vy = v_coef * dy;
+    float vx = v_coef * dx * (lv->getLevel()*2+1);
+    float vy = v_coef * dy * (lv->getLevel()*2+1);
 
     Element *elt = nullptr;
+
+    ElementType hunter;
+    ElementType target;
+
+    switch(player_type){
+    case (ElementType::ROCK) :
+      target = ElementType::SCISSORS;
+      hunter = ElementType::PAPER;
+      break;
+    case (ElementType::PAPER) :
+      target = ElementType::ROCK;
+      hunter = ElementType::SCISSORS;
+      break;
+    case (ElementType::SCISSORS) :
+      target = ElementType::PAPER;
+      hunter = ElementType::ROCK;
+      break;
+    default : 
+      target = player_type;
+      hunter = player_type;
+    }
+
+
 
     switch (type) {
     case 0:
     case 1:
-      elt = new Element(ElementType::ROCK, x, y, vx, vy, world);
+      elt = new Element(player_type, x, y, vx, vy, world);
       break;
     case 2:
     case 3:
     case 4:
     case 5:
     case 6:
-      elt = new Element(game::ElementType::PAPER, x, y, vx, vy, world);
+      elt = new Element(hunter, x, y, vx, vy, world);
       break;
     case 7 :
     case 8 :
     case 9 :
-      elt = new Element(game::ElementType::SCISSORS, x, y, vx, vy, world);
+      elt = new Element(target, x, y, vx, vy, world);
       break;
     default :
       assert(false);
@@ -151,7 +174,7 @@ namespace game {
       shape.setRadius(22.0f);
       shape.setOrigin(6.5f, 6.5f);
       shape.setPosition(pos.x,pos.y);
-      shape.setFillColor(sf::Color(0,0,0,180));
+      shape.setFillColor(sf::Color(0,0,0,150));
       window.draw(shape);
     }
 
@@ -203,4 +226,6 @@ namespace game {
   sf::Texture * Element::warrior;
   sf::Texture * Element::mother;
   sf::Texture * Element::tiger;
+
+
 }
