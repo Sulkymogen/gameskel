@@ -173,11 +173,25 @@ namespace game {
       break;
     }
 
-    if (m_function == ElementFunction::PLAYER) {
-      sf::CircleShape shape(24.0f);
+    if (m_function == ElementFunction::PLAYER) {      
+      sf::CircleShape shape;
+      shape.setRadius(24.0f);
       shape.setOrigin(24.0f, 24.0f);
-      shape.setPosition(pos.x, pos.y);
-      shape.setFillColor(sf::Color(0,0,0,150));
+      shape.setPosition(pos.x,pos.y);
+      
+      sf::Color color;
+      switch(m_type){
+      case game::ElementType::PAPER: // warrior
+	color = sf::Color(0x00, 0x80, 0xFF);
+	break;
+      case game::ElementType::ROCK: // tiger
+	color = sf::Color(0x03A, 0xDF, 0x00);
+	break;
+      case game::ElementType::SCISSORS: // mother
+	color = sf::Color(0xDF, 0x01, 0xD7);
+	break;
+      }
+      shape.setFillColor(color);
       window.draw(shape);
     }
 
