@@ -38,30 +38,37 @@ int main() {
 
   //
   // Menu
-  sf::RenderWindow menu(sf::VideoMode(MENU_WIDTH, MENU_HEIGHT), GAME_NAME " (version " GAME_VERSION ")", sf::Style::Titlebar|sf::Style::Close);
+  sf::RenderWindow menu(sf::VideoMode(MENU_WIDTH, MENU_HEIGHT), "The Game With No Name (version " GAME_VERSION ")", sf::Style::Titlebar|sf::Style::Close);
   menu.setKeyRepeatEnabled(false);
 
-  sf::Texture * menu_bg = manager.getTexture("menu_bg.png");
+  sf::Texture * menu_bg = manager.getTexture("menu_bg2.png");
   sf::Sprite menu_bg_sprite;
   menu_bg_sprite.setPosition(0, 0);
   menu_bg_sprite.setTexture(* menu_bg);
-  
-  
+
+
   sf::Texture * menu_logo = manager.getTexture("guerrier-tigre-maman-transparent.png");
   sf::Sprite menu_logo_sprite;
-  menu_logo_sprite.setPosition(10, 10);
+  menu_logo_sprite.setPosition(10, 0);
   menu_logo_sprite.setScale(0.40f, 0.40f);
   menu_logo_sprite.setTexture(* menu_logo);
   
+  sf::Texture * menu_name = manager.getTexture("game_name_penguin.png");
+  sf::Sprite menu_name_sprite;
+  menu_name_sprite.setPosition(25, 285);
+  menu_name_sprite.setScale(0.90f, 0.90f);
+  menu_name_sprite.setTexture(* menu_name);
   
-  sf::Texture * menu_jouer = manager.getTexture("jouer2.png");
+  sf::Texture * menu_jouer = manager.getTexture("jouer2_2.png");
   sf::Sprite menu_jouer_sprite;
-  menu_jouer_sprite.setPosition(100, 350);
+  menu_jouer_sprite.setPosition(130, 490);
+  menu_jouer_sprite.setScale(0.80f, 0.80f);
   menu_jouer_sprite.setTexture(* menu_jouer);
-  
+
   sf::Texture * menu_quitter = manager.getTexture("quitter2.png");
   sf::Sprite menu_quitter_sprite;
-  menu_quitter_sprite.setPosition(100, 500);
+  menu_quitter_sprite.setPosition(130, 580);
+  menu_quitter_sprite.setScale(0.80f, 0.80f);
   menu_quitter_sprite.setTexture(* menu_quitter);
 
   bool play = false;
@@ -101,6 +108,7 @@ int main() {
     menu.draw(menu_jouer_sprite);
     menu.draw(menu_quitter_sprite);
     menu.draw(menu_logo_sprite);
+    menu.draw(menu_name_sprite);
     menu.display();
 
   } // menu isOpen
@@ -109,7 +117,7 @@ int main() {
 
   if (play) {
     float ghost_time = GHOST_TIME;
-    
+
     bool play_with_mouse = true;
     //
     // Game
@@ -130,7 +138,7 @@ int main() {
 
       auto emitter = new game::ParticleEmitter(random, 300, 0.15);
       emitter->setPosition(game::Distributions::constantDistribution({ dead_event->where.x, dead_event->where.y }));
-      emitter->setVelocity(game::Distributions::diskDistribution({ 0.0f, 0.0f }, 300));
+      emitter->setVelocity(game::Distributions::diskDistribution({ 0.0f, 0.0f }, 30));
 
       sf::Color color;
 
@@ -147,7 +155,7 @@ int main() {
       }
 
       emitter->setColor(game::Distributions::constantDistribution(color));
-      emitter->setRadius(game::Distributions::uniformDistribution(1.0f, 2.0f));
+      emitter->setRadius(game::Distributions::uniformDistribution(0.1f, 0.4f));
       emitter->setPoints(game::Distributions::uniformDistribution(20u, 30u));
 
       emitter->setLifetime(game::Distributions::uniformDistribution(0.1f, 0.2f));
@@ -168,7 +176,7 @@ int main() {
 
     sf::View main_view;
     main_view.setCenter(0.0f, 0.0f);
-    main_view.setSize(600.0f, 600.0f);
+    main_view.setSize(60.0f, 60.0f);
     main_view.setViewport({ 0, 0, ratio, 1.0f });
 
     sf::View secondary_view({ 0, 0, SCREEN_WIDTH - SCREEN_HEIGHT, SCREEN_HEIGHT });
@@ -203,13 +211,13 @@ int main() {
     fixtureDef.filter.maskBits = game::ElementFunction::PLAYER | game::ElementFunction::ENEMY | game::ElementFunction::BOUNDARY;
 
     //add four walls to the static body
-    polygonShape.SetAsBox( 310, 10, b2Vec2(0, -300), 0);//ground
+    polygonShape.SetAsBox( 31, 1, b2Vec2(0, -30), 0);//ground
     staticBody->CreateFixture(&fixtureDef);
-    polygonShape.SetAsBox( 310, 10, b2Vec2(0, 300), 0);//ceiling
+    polygonShape.SetAsBox( 31, 1, b2Vec2(0, 30), 0);//ceiling
     staticBody->CreateFixture(&fixtureDef);
-    polygonShape.SetAsBox( 10, 310, b2Vec2(-300, 0), 0);//left wall
+    polygonShape.SetAsBox( 1, 31, b2Vec2(-30, 0), 0);//left wall
     staticBody->CreateFixture(&fixtureDef);
-    polygonShape.SetAsBox( 10, 310, b2Vec2(300, 0), 0);//right wall
+    polygonShape.SetAsBox( 1, 31, b2Vec2(30, 0), 0);//right wall
     staticBody->CreateFixture(&fixtureDef);
 
     // load resources
@@ -233,7 +241,8 @@ int main() {
   #else
     sf::Texture *background = manager.getTexture("background2.png");
     sf::Sprite bgsprite ;
-    bgsprite.setPosition(-300,-300);
+    bgsprite.setScale(0.1f, 0.1f);
+    bgsprite.setPosition(-30, -30);
     bgsprite.setTexture(* background);
   #endif // 0
 
@@ -281,7 +290,7 @@ int main() {
       for (b2Body *body = b2_world.GetBodyList(); body != nullptr; body = body->GetNext()) {
         b2Vec2 pos = body->GetPosition();
 
-        if (pos.x < -340 || pos.x > 340 || pos.y < -340 || pos.y > 340) {
+        if (pos.x < -34 || pos.x > 34 || pos.y < -34 || pos.y > 34) {
           void* bodyUserData = body->GetUserData();
 
           if (bodyUserData) {
@@ -295,6 +304,8 @@ int main() {
       float vx = 0.0f;
       float vy = 0.0f;
 
+#define SPEED_DIFF 1.0f
+
       if (play_with_mouse) {
         auto mouse_position = sf::Mouse::getPosition(window);
         auto mouse_world_position = window.mapPixelToCoords(mouse_position, main_view);
@@ -303,26 +314,27 @@ int main() {
         vy = mouse_world_position.y - player->getBody()->GetPosition().y;
       } else {
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::Up)){
-          vy -= PLAYER_SPEED;
+          vy -= SPEED_DIFF;
         }
 
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::Down)){
-          vy += PLAYER_SPEED;
+          vy += SPEED_DIFF;
         }
 
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::Left)){
-          vx -= PLAYER_SPEED;
+          vx -= SPEED_DIFF;
         }
 
         if(sf::Keyboard::isKeyPressed(sf::Keyboard::Right)){
-          vx += PLAYER_SPEED;
+          vx += SPEED_DIFF;
         }
       }
 
-      float vmax = sqrt(vx * vx + vy * vy);
-      if (vmax > 1e-4) {
-        vx = PLAYER_SPEED * vx *2/ vmax;
-        vy = PLAYER_SPEED * vy *2/ vmax;
+      float vmax = std::sqrt(vx * vx + vy * vy);
+
+      if (vmax > SPEED_DIFF * 0.5) {
+        vx = vx / vmax * PLAYER_SPEED;
+        vy = vy / vmax * PLAYER_SPEED;
       } else {
         vx = 0.0f;
         vy = 0.0f;
@@ -349,19 +361,20 @@ int main() {
 	ghost_time = GHOST_TIME;
 	player->setState(game::ElementState::ALIVE);
       }
+
     
 
       sf::RectangleShape rectangle3;
-      rectangle3.setSize(sf::Vector2f(2,SCREEN_HEIGHT));
+      rectangle3.setSize(sf::Vector2f(0.2,SCREEN_HEIGHT));
       rectangle3.setFillColor(sf::Color(0x10, 0x19, 0x07));
-      rectangle3.setPosition(-300, -300);
+      rectangle3.setPosition(-30, -30);
       window.draw(rectangle3);
 
-      rectangle3.setSize(sf::Vector2f(600,2));
-      rectangle3.setPosition(-300, -300);
+      rectangle3.setSize(sf::Vector2f(60,0.2));
+      rectangle3.setPosition(-30, -30);
       window.draw(rectangle3);
 
-      rectangle3.setPosition(-300, 298);
+      rectangle3.setPosition(-30, 29.8);
       window.draw(rectangle3);
 
       //Render secondary view

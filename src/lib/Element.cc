@@ -47,9 +47,9 @@ namespace game {
   Element *Element::randomGeneration(b2World *world, Random& m_random, ElementType player_type, Level * lv) {
     Distribution<unsigned> axis_dist = game::Distributions::uniformDistribution (0u, 3u);
     Distribution<unsigned> type_dist = game::Distributions::uniformDistribution (0u, 19u);
-    Distribution<unsigned> coef_dist = game::Distributions::uniformDistribution (50u, 50u + 2 * (int)ELEMENT_SIZE);
-    Distribution<float> value_dist = game::Distributions::uniformDistribution (-320.0f - ELEMENT_SIZE, 320.0f + ELEMENT_SIZE);
-    Distribution<float> cible_dist = game::Distributions::uniformDistribution (-320.0f, 320.0f);
+    Distribution<unsigned> coef_dist = game::Distributions::uniformDistribution (5u, 5u + 2 * (int)ELEMENT_SIZE);
+    Distribution<float> value_dist = game::Distributions::uniformDistribution (-32.0f - ELEMENT_SIZE, 32.0f + ELEMENT_SIZE);
+    Distribution<float> cible_dist = game::Distributions::uniformDistribution (-32.0f, 32.0f);
     unsigned axis = axis_dist(m_random);
     unsigned type = type_dist(m_random);
     unsigned coef = coef_dist(m_random);
@@ -61,18 +61,18 @@ namespace game {
     switch (axis) {
     case 0:
       x = value;
-      y = 320.0f + ELEMENT_SIZE;
+      y = 32.0f + ELEMENT_SIZE;
       break;
     case 1:
-      x = 320.0f + ELEMENT_SIZE;
+      x = 32.0f + ELEMENT_SIZE;
       y = value;
       break;
     case 2:
       x = value;
-      y = -320.0f - ELEMENT_SIZE;
+      y = -32.0f - ELEMENT_SIZE;
       break;
     case 3:
-      x = -320.0f - ELEMENT_SIZE;
+      x = -32.0f - ELEMENT_SIZE;
       y = value;
       break;
     default:
@@ -88,8 +88,8 @@ namespace game {
 
     float v_coef = coef / std::sqrt(dx*dx+dy*dy);
 
-    float vx = v_coef * dx * (lv->getLevel());
-    float vy = v_coef * dy * (lv->getLevel());
+    float vx = v_coef * dx * (lv->getLevel() * 0.2f + 1);
+    float vy = v_coef * dy * (lv->getLevel() * 0.2f + 1);
 
     Element *elt = nullptr;
 
@@ -168,7 +168,7 @@ namespace game {
     auto angle = m_body->GetAngle();
 
     sf::Sprite sprite;
-    sprite.setOrigin(4.5f * ELEMENT_SIZE, 4.5f * ELEMENT_SIZE);
+    sprite.setOrigin(45 * ELEMENT_SIZE, 45 * ELEMENT_SIZE);
     sprite.setScale(ELEMENT_SIZE / 90.0f, ELEMENT_SIZE / 90.0f);
     sprite.setPosition(pos.x, pos.y);
     sprite.setRotation(angle * 180 / M_PI);
@@ -190,8 +190,8 @@ namespace game {
 
     if (m_function == ElementFunction::PLAYER) {
       sf::CircleShape shape;
-      shape.setRadius(24.0f);
-      shape.setOrigin(24.0f, 24.0f);
+      shape.setRadius(2.4f);
+      shape.setOrigin(2.4f, 2.4f);
       shape.setPosition(pos.x,pos.y);
 
       sf::Color color;
@@ -259,7 +259,7 @@ namespace game {
   }
 
   void Element::setRectShape(float x, float y){
-    for(b2Fixture *fixture = m_body->GetFixtureList(); fixture != nullptr; fixture = fixture->GetNext()) { 
+    for(b2Fixture *fixture = m_body->GetFixtureList(); fixture != nullptr; fixture = fixture->GetNext()) {
 
   //shape definition
     b2PolygonShape polygonShape;
@@ -285,11 +285,11 @@ namespace game {
   b2Body * Element::getBody (void) const {
     return m_body;
   }
-  
+
   bool Element::isGhost(void) const {
     return ElementState::GHOST == m_state;
   }
-  
+
   void Element::setState(ElementState state) {
     m_state = state;
   }
