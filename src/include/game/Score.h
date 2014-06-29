@@ -20,8 +20,16 @@ namespace game {
     virtual void render(sf::RenderWindow& window);
     
   private:
+    enum class ScoreStatus{
+      UP,
+      IDDLE,
+      DOWN,
+    };
+      
     int m_score;
     sf::Font *m_font;
+    ScoreStatus m_upScore;
+    int m_factor;
   };
 }
 

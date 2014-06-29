@@ -64,6 +64,16 @@ namespace game {
   }
 
   void ParticleEmitter::update(ParticleSystem& system, float dt) {
+    if (m_duration < 0) {
+      return;
+    }
+
+    if (m_duration < dt) {
+      dt = m_duration;
+    }
+
+    m_duration -= dt;
+
     float exact_count = dt * m_emission_rate + m_emission_difference;
     unsigned count = static_cast<unsigned>(exact_count);
 
@@ -101,19 +111,25 @@ namespace game {
   }
 
   EntityFuture ParticleSystem::update(float dt) {
-    for (auto& p : m_particles) {
-      p.remaining_lifetime -= dt;
-    }
+    if (!m_particles.empty()) {
+      for (auto& p : m_particles) {
+        p.remaining_lifetime -= dt;
+      }
 
-    while (m_particles.front().remaining_lifetime < 0) {
-      std::pop_heap(m_particles.begin(), m_particles.end());
-      m_particles.pop_back();
-    }
+      while (!m_particles.empty() && m_particles.front().remaining_lifetime < 0) {
+        std::pop_heap(m_particles.begin(), m_particles.end());
+        m_particles.pop_back();
+      }
 
-    assert(std::is_heap(m_particles.begin(), m_particles.end()));
+      assert(std::is_heap(m_particles.begin(), m_particles.end()));
+    }
 
     for (auto emitter : m_emitters) {
       emitter->update(*this, dt);
+    }
+
+    if (m_particles.empty()) {
+      return EntityFuture::REMOVE;
     }
 
     for (auto& p : m_particles) {
@@ -128,9 +144,9 @@ namespace game {
 
     if (m_tick < 0) {
       m_tick += 1;
-      std::cerr << m_particles.size() << '\n';
+//       std::cerr << m_particles.size() << '\n';
     }
-    
+
     return EntityFuture::KEEP;
   }
 
