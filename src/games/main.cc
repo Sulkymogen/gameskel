@@ -237,7 +237,7 @@ int main() {
     bgsprite.setTexture(* background);
   #endif // 0
 
-    sf::Font *font = manager.getFont("arial.ttf");
+    sf::Font *font = manager.getFont("segoe.ttf");
     player->getScore()->setFont(font);
     player->getLevel()->setFont(font);
 
@@ -350,6 +350,20 @@ int main() {
 	player->setState(game::ElementState::ALIVE);
       }
     
+
+      sf::RectangleShape rectangle3;
+      rectangle3.setSize(sf::Vector2f(2,SCREEN_HEIGHT));
+      rectangle3.setFillColor(sf::Color(0x10, 0x19, 0x07));
+      rectangle3.setPosition(-300, -300);
+      window.draw(rectangle3);
+
+      rectangle3.setSize(sf::Vector2f(600,2));
+      rectangle3.setPosition(-300, -300);
+      window.draw(rectangle3);
+
+      rectangle3.setPosition(-300, 298);
+      window.draw(rectangle3);
+
       //Render secondary view
       window.setView(secondary_view);
       
@@ -358,7 +372,36 @@ int main() {
       rectangle.setFillColor(sf::Color(136, 155, 107));
       rectangle.setPosition(0, 0);
       window.draw(rectangle);
-      
+
+      sf::RectangleShape rectangle2;
+      rectangle2.setSize(sf::Vector2f(2, SCREEN_HEIGHT));
+      rectangle2.setFillColor(sf::Color(0x10, 0x19, 0x07));
+      rectangle2.setPosition(0, 0);
+      window.draw(rectangle2);
+
+      sf::RectangleShape rectangle4;
+      rectangle4.setSize(sf::Vector2f(2, SCREEN_HEIGHT));
+      rectangle4.setFillColor(sf::Color(0x10, 0x19, 0x07));
+      rectangle4.setPosition(SCREEN_WIDTH-SCREEN_HEIGHT-2,0);
+      window.draw(rectangle4);
+
+      sf::RectangleShape rectangle5;
+      rectangle5.setSize(sf::Vector2f(SCREEN_WIDTH-SCREEN_HEIGHT,2 ));
+      rectangle5.setFillColor(sf::Color(0x10, 0x19, 0x07));
+      rectangle5.setPosition(0,0);
+      window.draw(rectangle5);
+
+      rectangle5.setSize(sf::Vector2f(SCREEN_WIDTH-SCREEN_HEIGHT,2 ));
+      rectangle5.setFillColor(sf::Color(0x10, 0x19, 0x07));
+      rectangle5.setPosition(0,SCREEN_HEIGHT-2);
+      window.draw(rectangle5);
+
+      sf::Sprite logo_sprite;
+      logo_sprite.setPosition(0, SCREEN_HEIGHT/2+40);
+      logo_sprite.setScale(0.30f, 0.30f);
+      logo_sprite.setTexture(* menu_logo);
+      window.draw(logo_sprite);
+
       clockElapsed.render(window);
       player->getScore()->render(window);
       player->getLevel()->render(window);

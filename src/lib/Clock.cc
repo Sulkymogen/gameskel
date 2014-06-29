@@ -18,7 +18,7 @@ namespace game{
     text.setFont(*m_font);
     text.setString("Time: "+std::to_string(static_cast<int>(m_timer)));
     text.setCharacterSize(24);
-    text.setPosition(0, 60);
+    text.setPosition(100, 220);
     text.setColor(sf::Color::Black);
     
     window.draw(text);

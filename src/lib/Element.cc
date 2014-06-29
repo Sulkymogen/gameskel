@@ -88,8 +88,8 @@ namespace game {
 
     float v_coef = coef / std::sqrt(dx*dx+dy*dy);
 
-    float vx = v_coef * dx * (lv->getLevel()*2+1);
-    float vy = v_coef * dy * (lv->getLevel()*2+1);
+    float vx = v_coef * dx * (lv->getLevel());
+    float vy = v_coef * dy * (lv->getLevel());
 
     Element *elt = nullptr;
 
