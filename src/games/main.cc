@@ -415,6 +415,12 @@ int main() {
       logo_sprite.setTexture(* menu_logo);
       window.draw(logo_sprite);
 
+      sf::Sprite name_sprite;
+      name_sprite.setPosition(5, 0);
+      name_sprite.setScale(0.65f, 0.65f);
+      name_sprite.setTexture(* menu_name);
+      window.draw(name_sprite);
+
       clockElapsed.render(window);
       player->getScore()->render(window);
       player->getLevel()->render(window);
