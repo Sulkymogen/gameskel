@@ -42,7 +42,7 @@ namespace game {
     world->DestroyBody(m_body);
   }
 
-  Element *Element::randomGeneration(b2World *world, Random& m_random) {
+  Element *Element::randomGeneration(b2World *world, Random& m_random, ElementType player_type) {
     Distribution<unsigned> axis_dist = game::Distributions::uniformDistribution (0u, 3u);
     Distribution<unsigned> type_dist = game::Distributions::uniformDistribution (0u, 9u);
     Distribution<unsigned> coef_dist = game::Distributions::uniformDistribution (50u, 50u + 2 * (int)ELEMENT_SIZE);
@@ -91,22 +91,45 @@ namespace game {
 
     Element *elt = nullptr;
 
+    ElementType hunter;
+    ElementType target;
+
+    switch(player_type){
+    case (ElementType::ROCK) :
+      target = ElementType::SCISSORS;
+      hunter = ElementType::PAPER;
+      break;
+    case (ElementType::PAPER) :
+      target = ElementType::ROCK;
+      hunter = ElementType::SCISSORS;
+      break;
+    case (ElementType::SCISSORS) :
+      target = ElementType::PAPER;
+      hunter = ElementType::ROCK;
+      break;
+    default : 
+      target = player_type;
+      hunter = player_type;
+    }
+
+
+
     switch (type) {
     case 0:
     case 1:
-      elt = new Element(ElementType::ROCK, x, y, vx, vy, world);
+      elt = new Element(player_type, x, y, vx, vy, world);
       break;
     case 2:
     case 3:
     case 4:
     case 5:
     case 6:
-      elt = new Element(game::ElementType::PAPER, x, y, vx, vy, world);
+      elt = new Element(hunter, x, y, vx, vy, world);
       break;
     case 7 :
     case 8 :
     case 9 :
-      elt = new Element(game::ElementType::SCISSORS, x, y, vx, vy, world);
+      elt = new Element(target, x, y, vx, vy, world);
       break;
     default :
       assert(false);

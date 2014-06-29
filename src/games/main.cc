@@ -57,8 +57,12 @@ int main() {
   game::WorldListener worldListenerInstance;
   b2_world.SetContactListener(&worldListenerInstance);
 
-  game::Player player(game::ElementType::ROCK, 0.0f, 0.0f, &b2_world);
-  world.addEntity(&player, game::Memory::FROM_STACK);
+  //game::Player player(game::ElementType::ROCK, 0.0f, 0.0f, &b2_world);
+  auto player = game::Player::randomGeneration(&b2_world, random);
+  world.addEntity(player, game::Memory::FROM_STACK);
+
+ 
+
 
   //a static body
   b2BodyDef boundaryDef;
@@ -112,10 +116,10 @@ int main() {
 #endif // 0
 
   sf::Font *font = manager.getFont("arial.ttf");
-  player.getScore()->setFont(font);
+  player->getScore()->setFont(font);
 
   for (int i = 0; i < ENTITIES_NUMBER; i++) {
-    auto elt = game::Element::randomGeneration(&b2_world, random);
+    auto elt = game::Element::randomGeneration(&b2_world, random, player->getElementType());
     world.addEntity(elt, game::Memory::FROM_HEAP);
   }
 
@@ -123,7 +127,7 @@ int main() {
   sf::Clock clock;
   while (window.isOpen()) {
     if (ENTITIES_NUMBER + 1 > b2_world.GetBodyCount()) {
-      auto elt = game::Element::randomGeneration(&b2_world, random);
+      auto elt = game::Element::randomGeneration(&b2_world, random,  player->getElementType());
       world.addEntity(elt, game::Memory::FROM_HEAP);
     }
 
@@ -195,7 +199,7 @@ int main() {
       vy = 0.0f;
     }
 
-    player.move(vx, vy);
+    player->move(vx, vy);
 
     // update
     sf::Time elapsed = clock.restart();
@@ -211,7 +215,7 @@ int main() {
 
     //Render secondary view
     window.setView(secondary_view);
-    player.getScore()->render(window);
+    player->getScore()->render(window);
 
 
     window.display();

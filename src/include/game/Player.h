@@ -11,7 +11,9 @@ namespace game {
   {
   public:
     explicit Player(ElementType type, float x, float y, b2World *world);
-    
+
+    static Player* randomGeneration(b2World *world, Random& m_random);
+
     void move(float vx, float vy);
     
     Score *getScore();
