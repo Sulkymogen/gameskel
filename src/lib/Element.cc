@@ -3,7 +3,9 @@
 #include <cassert>
 #include <cmath>
 
+#include <game/Events.h>
 #include <game/Param.h>
+#include <game/World.h>
 
 namespace game {
 
@@ -26,7 +28,7 @@ namespace game {
     b2FixtureDef fixture;
     fixture.shape = &circle;
     fixture.density = 1.0f;
-    fixture.friction = 0.1f;
+    fixture.friction = 1.0f;
     fixture.restitution = 1.0f;
     fixture.filter.categoryBits = static_cast<uint16>(ElementFunction::ENEMY);
     fixture.filter.maskBits = static_cast<uint16>(ElementFunction::ENEMY|ElementFunction::PLAYER);
@@ -107,7 +109,7 @@ namespace game {
       target = ElementType::PAPER;
       hunter = ElementType::ROCK;
       break;
-    default : 
+    default :
       target = player_type;
       hunter = player_type;
     }
@@ -172,7 +174,7 @@ namespace game {
     if (m_function == ElementFunction::PLAYER) {
       sf::CircleShape shape;
       shape.setRadius(24.0f);
-      shape.setOrigin(9.0f, 9.0f);
+      shape.setOrigin(8.5f, 8.5f);
       shape.setPosition(pos.x,pos.y);
       shape.setFillColor(sf::Color(0,0,0,150));
       window.draw(shape);
@@ -183,12 +185,19 @@ namespace game {
 
   void Element::disappear() {
     m_state = ElementState::DEAD;
+
+    assert(world);
+
+    DeadEvent event;
+    event.what = m_type;
+    event.where = m_body->GetPosition();
+    world->triggerEvent(nullptr, &event);
   }
 
   ElementFunction Element::getFunction() const{
     return m_function;
   }
-  
+
   bool Element::isPlayer() {
     if (m_function == ElementFunction::PLAYER) {
       return true;
@@ -222,10 +231,15 @@ namespace game {
   ElementType Element::getElementType(void) const {
     return m_type;
   }
+  
+  b2Body * Element::getBody (void) const {
+    return m_body;
+  }
 
   sf::Texture * Element::warrior;
   sf::Texture * Element::mother;
   sf::Texture * Element::tiger;
 
+  World *Element::world = nullptr;
 
 }

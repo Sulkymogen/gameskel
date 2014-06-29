@@ -35,7 +35,7 @@ int main() {
 
   game::Random random;
 
-  game::ParticleEmitter emitter(random, 30);
+  game::ParticleEmitter emitter(random, 30, 60);
   emitter.setPosition(game::Distributions::constantDistribution({ 512.0f, 700.0f }));
   emitter.setVelocity(game::Distributions::arcDistribution({ 0.0f, 0.0f }, 200.0f, M_PI - 0.3, M_PI + 0.3));
 
