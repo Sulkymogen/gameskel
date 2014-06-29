@@ -35,29 +35,29 @@ int main() {
 
   manager.addSearchDir(GAME_DATADIR);
 
-  
-  // 
+
+  //
   // Menu
   sf::RenderWindow menu(sf::VideoMode(MENU_WIDTH, MENU_HEIGHT), GAME_NAME " (version " GAME_VERSION ")", sf::Style::Titlebar|sf::Style::Close);
   menu.setKeyRepeatEnabled(false);
-  
+
   sf::Texture * menu_bg = manager.getTexture("menu_bg.png");
   sf::Sprite menu_bg_sprite;
   menu_bg_sprite.setPosition(0, 0);
   menu_bg_sprite.setTexture(* menu_bg);
-  
+
   sf::Texture * menu_jouer = manager.getTexture("jouer.png");
   sf::Sprite menu_jouer_sprite;
   menu_jouer_sprite.setPosition(100, 350);
   menu_jouer_sprite.setTexture(* menu_jouer);
-  
+
   sf::Texture * menu_quitter = manager.getTexture("quitter.png");
   sf::Sprite menu_quitter_sprite;
   menu_quitter_sprite.setPosition(100, 500);
   menu_quitter_sprite.setTexture(* menu_quitter);
-  
+
   bool play = false;
-  
+
   while (menu.isOpen()) {
     // input
     sf::Event event;
@@ -73,12 +73,12 @@ int main() {
 
           default:
             break;
-        } 
-        
+        }
+
       } else if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-          
+
         const sf::Vector2i localPosition = sf::Mouse::getPosition(menu);
-        
+
         if (menu_jouer_sprite.getGlobalBounds().contains(localPosition.x, localPosition.y)) {
           play = true;
           menu.close();
@@ -87,25 +87,25 @@ int main() {
         }
       }
     } // pollEvent
-    
+
     menu.clear(sf::Color::White);
     menu.draw(menu_bg_sprite);
     menu.draw(menu_jouer_sprite);
     menu.draw(menu_quitter_sprite);
     menu.display();
-    
+
   } // menu isOpen
-  
-  
-  
+
+
+
   if (play) {
     //
     // Game
-    
+
     // initialize
     std::random_device dev;
     game::Random random(dev());
-    
+
     float mouse_factor = (SCREEN_HEIGHT-100.0f)/(SCREEN_HEIGHT);
 
     b2Vec2 b2_gravity(0.0f, 0.0f);
@@ -204,7 +204,7 @@ int main() {
 
     // load resources
 
-    
+
     game::Element::warrior=manager.getTexture("warrior.png");
     game::Element::warrior->setSmooth(true);
     game::Element::tiger=manager.getTexture("tiger.png");
@@ -297,10 +297,10 @@ int main() {
       if(sf::Keyboard::isKeyPressed(sf::Keyboard::Right)){
         vx += PLAYER_SPEED;
       }
-      
-      vx = (sf::Mouse::getPosition(window).x - SCREEN_HEIGHT/2) * mouse_factor - 15.0f - player->getBody()->GetPosition().x;
-      vy = (sf::Mouse::getPosition(window).y - SCREEN_HEIGHT/2) * mouse_factor - 15.0f - player->getBody()->GetPosition().y;
-      
+
+      vx = (sf::Mouse::getPosition(window).x - SCREEN_HEIGHT/2) * mouse_factor - player->getBody()->GetPosition().x;
+      vy = (sf::Mouse::getPosition(window).y - SCREEN_HEIGHT/2) * mouse_factor - player->getBody()->GetPosition().y;
+
       float vmax = sqrt(vx * vx + vy * vy);
       if (vmax > 1e-4) {
         vx = PLAYER_SPEED * vx *2/ vmax;
