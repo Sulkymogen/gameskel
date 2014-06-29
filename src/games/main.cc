@@ -42,12 +42,12 @@ int main() {
   sf::Sound ambiance;
   ambiance.setBuffer(* ambiance_buffer);
   ambiance.setLoop(true);
-  ambiance.setVolume(100.0f);
+  ambiance.setVolume(50.0f);
   ambiance.play();
   
   sf::SoundBuffer * death_buffer = manager.getSoundBuffer("nutfall.flac");
   sf::Sound death;
-  death.setVolume(40.0f);
+  death.setVolume(70.0f);
   death.setBuffer(* death_buffer);
   
   
