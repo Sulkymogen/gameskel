@@ -11,6 +11,8 @@ namespace game{
     
     void setFont(sf::Font *font);
     
+    int getTimeElapsed() const;
+    
     virtual EntityFuture update(float dt);
     virtual void render(sf::RenderWindow& window);
     
