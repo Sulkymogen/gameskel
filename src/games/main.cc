@@ -106,8 +106,6 @@ int main() {
     std::random_device dev;
     game::Random random(dev());
 
-    float mouse_factor = (SCREEN_HEIGHT-100.0f)/(SCREEN_HEIGHT);
-
     b2Vec2 b2_gravity(0.0f, 0.0f);
     b2World b2_world(b2_gravity);
 
@@ -298,8 +296,11 @@ int main() {
         vx += PLAYER_SPEED;
       }
 
-      vx = (sf::Mouse::getPosition(window).x - SCREEN_HEIGHT/2) * mouse_factor - player->getBody()->GetPosition().x;
-      vy = (sf::Mouse::getPosition(window).y - SCREEN_HEIGHT/2) * mouse_factor - player->getBody()->GetPosition().y;
+      auto mouse_position = sf::Mouse::getPosition(window);
+      auto mouse_world_position = window.mapPixelToCoords(mouse_position, main_view);
+
+      vx = mouse_world_position.x - player->getBody()->GetPosition().x;
+      vy = mouse_world_position.y - player->getBody()->GetPosition().y;
 
       float vmax = sqrt(vx * vx + vy * vy);
       if (vmax > 1e-4) {
