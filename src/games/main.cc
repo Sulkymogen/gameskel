@@ -30,6 +30,55 @@
 #include "config.h"
 
 int main() {
+  game::World world;
+  
+  game::ResourceManager manager;
+
+  manager.addSearchDir(GAME_DATADIR);
+
+  
+  // 
+  // Menu
+  sf::RenderWindow menu(sf::VideoMode(MENU_WIDTH, MENU_HEIGHT), GAME_NAME " (version " GAME_VERSION ")", sf::Style::Titlebar|sf::Style::Close);
+  menu.setKeyRepeatEnabled(false);
+  
+  sf::Texture * menu_bg = manager.getTexture("menu_bg.png");
+  sf::Sprite menu_bg_sprite ;
+  menu_bg_sprite.setPosition(0,0);
+  menu_bg_sprite.setTexture(* menu_bg);
+  
+  while (menu.isOpen()) {
+    // input
+    sf::Event event;
+    while (menu.pollEvent(event)) {
+      if (event.type == sf::Event::Closed) {
+        menu.close();
+      } else if (event.type == sf::Event::KeyPressed) {
+
+        switch (event.key.code) {
+          case sf::Keyboard::Escape:
+            menu.close();
+            break;
+
+          default:
+            break;
+        }
+      }
+    }
+    
+    menu.clear(sf::Color::White);
+    menu.draw(menu_bg_sprite);
+    
+    menu.display();
+    
+  }
+  
+  
+  
+  
+  //
+  // Game
+  
   // initialize
   std::random_device dev;
   game::Random random(dev());
@@ -37,7 +86,6 @@ int main() {
   b2Vec2 b2_gravity(0.0f, 0.0f);
   b2World b2_world(b2_gravity);
 
-  game::World world;
   sf::RenderWindow window(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT), GAME_NAME " (version " GAME_VERSION ")", sf::Style::Titlebar|sf::Style::Close);
   window.setKeyRepeatEnabled(false);
 
@@ -91,10 +139,7 @@ int main() {
 
   // load resources
 
-  game::ResourceManager manager;
-
-  manager.addSearchDir(GAME_DATADIR);
-
+  
   game::Element::warrior=manager.getTexture("warrior.png");
   game::Element::warrior->setSmooth(true);
   game::Element::tiger=manager.getTexture("tiger.png");
