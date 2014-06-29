@@ -7,9 +7,9 @@
 #define MENU_WIDTH 500
 #define MENU_HEIGHT 700
 
-#define PLAYER_SPEED 50.0f
+#define PLAYER_SPEED 25.0f
 
-#define ELEMENT_SIZE 20.0f
+#define ELEMENT_SIZE 2.0f
 
 #define ENTITIES_NUMBER 15
 

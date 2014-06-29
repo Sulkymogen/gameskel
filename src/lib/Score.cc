@@ -45,6 +45,7 @@ namespace game {
     text.setString("Score: "+std::to_string(m_score));
     text.setCharacterSize(24);
     text.setColor(sf::Color::Black);
+    text.setPosition(100, 160);
     
     window.draw(text);
     
@@ -53,7 +54,8 @@ namespace game {
     else
       text.setString("Combo: x-"+std::to_string(m_factor));
     
-    text.setPosition(0, 90);
+    //text.setPosition(0, 90);
+    text.setPosition(100, 250);
     window.draw(text);
   }
   

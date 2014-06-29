@@ -49,6 +49,7 @@ namespace game {
 	    }
           }
           break;
+
       }
       player->getLevel()->setLevel(player->getScore()->getScore()/800 +1);
   }
@@ -100,6 +101,7 @@ namespace game {
               elementA->disappear();
             }
             break;
+
         }
       }
       
