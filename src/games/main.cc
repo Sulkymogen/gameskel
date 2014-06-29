@@ -40,6 +40,7 @@ int main() {
   window.setKeyRepeatEnabled(false);
 
   float ratio = static_cast<float>(SCREEN_HEIGHT) / static_cast<float>(SCREEN_WIDTH);
+  int entitiesNumber = 15;
 
   sf::View main_view;
   main_view.setCenter(0.0f, 0.0f);
@@ -120,7 +121,7 @@ int main() {
   game::Clock clockElapsed;
   clockElapsed.setFont(font);
 
-  for (int i = 0; i < ENTITIES_NUMBER; i++) {
+  for (int i = 0; i < entitiesNumber; i++) {
     auto elt = game::Element::randomGeneration(&b2_world, random, player->getElementType(), player->getLevel());
     world.addEntity(elt, game::Memory::FROM_HEAP);
   }
@@ -128,7 +129,7 @@ int main() {
   // main loop
   sf::Clock clock;
   while (window.isOpen()) {
-    if (ENTITIES_NUMBER + 1 > b2_world.GetBodyCount()) {
+    if (entitiesNumber + 1 > b2_world.GetBodyCount()) {
       auto elt = game::Element::randomGeneration(&b2_world, random,  player->getElementType(), player->getLevel());
       world.addEntity(elt, game::Memory::FROM_HEAP);
     }
@@ -202,6 +203,8 @@ int main() {
     }
 
     player->move(vx, vy);
+    
+    entitiesNumber = ENTITIES_NUMBER + clockElapsed.getTimeElapsed()/10;
 
     // update
     sf::Time elapsed = clock.restart();
