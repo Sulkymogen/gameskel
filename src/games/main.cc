@@ -221,6 +221,8 @@ int main() {
     game::Element::tiger->setSmooth(true);
     game::Element::mother=manager.getTexture("mother.png");
     game::Element::mother->setSmooth(true);
+    game::Element::bonus=manager.getTexture("bonus.jpeg");
+    game::Element::bonus->setSmooth(true);
 
   #if 0
     sf::Texture *background = manager.getTexture("background.jpg");
@@ -354,6 +356,13 @@ int main() {
 
       //Render secondary view
       window.setView(secondary_view);
+      
+      sf::RectangleShape rectangle;
+      rectangle.setSize(sf::Vector2f(SCREEN_WIDTH-SCREEN_HEIGHT, SCREEN_HEIGHT));
+      rectangle.setFillColor(sf::Color(136, 155, 107));
+      rectangle.setPosition(0, 0);
+      window.draw(rectangle);
+      
       clockElapsed.render(window);
       player->getScore()->render(window);
       player->getLevel()->render(window);
