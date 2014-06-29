@@ -1,13 +1,17 @@
 #include <game/Element.h>
 #include <game/Player.h>
 #include <game/WorldListener.h>
+#include <game/Events.h>
 #include <iostream>
+#include <SFML/Audio.hpp>
 
 namespace game {
   
   static void collision(Element * elementPlayer, Element * elementEnnemy) {
+    
     ElementType typeEnnemy = elementEnnemy->getElementType();
-    Player * player = static_cast<Player *>(elementPlayer);
+    Player * player = static_cast<Player *>(elementPlayer); 
+
     
       switch (player->getElementType()) {
         case ElementType::PAPER:
@@ -45,12 +49,21 @@ namespace game {
 	    }
           }
           break;
+	  
+	default:
+	  break;
 
       }
       player->getLevel()->setLevel(player->getScore()->getScore()/800 +1);
+      
+      if(typeEnnemy == ElementType::BONUS){
+	elementEnnemy->disappear();
+	player->getScore()->increaseScore(1000);
+      }
   }
 
-  void WorldListener::BeginContact(b2Contact* contact) { 
+  void WorldListener::BeginContact(b2Contact* contact) {
+ 
     void* bodyUserDataA = contact->GetFixtureA()->GetBody()->GetUserData();
     void* bodyUserDataB = contact->GetFixtureB()->GetBody()->GetUserData();
 
@@ -96,6 +109,8 @@ namespace game {
               elementA->disappear();
             }
             break;
+	  default:
+	    break;
 
         }
       }

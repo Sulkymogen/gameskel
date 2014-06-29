@@ -12,6 +12,10 @@ namespace game {
     ElementType what;
     b2Vec2 where;
   };
+  
+  struct CollideEvent : public Event {
+    static const EventType type = "CollideEvent"_type;
+  };
 
 
 }
