@@ -48,7 +48,7 @@ namespace game {
       m_factor = 1;
     }
     
-    m_score-= m_factor*100;
+    m_score-= m_factor*500;
   }
   
   

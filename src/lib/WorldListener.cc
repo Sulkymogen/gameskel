@@ -58,7 +58,7 @@ namespace game {
       
       if(typeEnnemy == ElementType::BONUS){
 	elementEnnemy->disappear();
-	player->getScore()->increaseScore(1000);
+	player->getScore()->increaseScore(500);
       }
   }
 
