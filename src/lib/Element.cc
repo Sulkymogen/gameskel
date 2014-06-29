@@ -171,8 +171,8 @@ namespace game {
 
     if (m_function == ElementFunction::PLAYER) {
       sf::CircleShape shape;
-      shape.setRadius(22.0f);
-      shape.setOrigin(6.5f, 6.5f);
+      shape.setRadius(24.0f);
+      shape.setOrigin(9.0f, 9.0f);
       shape.setPosition(pos.x,pos.y);
       shape.setFillColor(sf::Color(0,0,0,150));
       window.draw(shape);
