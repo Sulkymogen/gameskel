@@ -27,5 +27,9 @@ namespace game{
   void Clock::setFont(sf::Font *font){
     m_font = font;
   }
+  
+  int Clock::getTimeElapsed() const{
+    return static_cast<int>(m_timer);
+  }
 
 }

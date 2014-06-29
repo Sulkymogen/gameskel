@@ -153,11 +153,13 @@ namespace game {
 
   void Element::render(sf::RenderWindow& window) {
     auto pos = m_body->GetPosition();
+    auto angle = m_body->GetAngle();
 
     sf::Sprite sprite;
-    sprite.setScale(ELEMENT_SIZE/90,ELEMENT_SIZE/90);
-    sprite.setOrigin(ELEMENT_SIZE, ELEMENT_SIZE);
+    sprite.setOrigin(4.5f * ELEMENT_SIZE, 4.5f * ELEMENT_SIZE);
+    sprite.setScale(ELEMENT_SIZE / 90.0f, ELEMENT_SIZE / 90.0f);
     sprite.setPosition(pos.x, pos.y);
+    sprite.setRotation(angle * 180 / M_PI);
 
     switch(m_type){
     case ElementType::PAPER:
@@ -171,10 +173,10 @@ namespace game {
       break;
     }
 
-    if (m_function == ElementFunction::PLAYER) {
+    if (m_function == ElementFunction::PLAYER) {      
       sf::CircleShape shape;
       shape.setRadius(24.0f);
-      shape.setOrigin(8.5f, 8.5f);
+      shape.setOrigin(24.0f, 24.0f);
       shape.setPosition(pos.x,pos.y);
       
       sf::Color color;
@@ -244,7 +246,7 @@ namespace game {
   ElementType Element::getElementType(void) const {
     return m_type;
   }
-  
+
   b2Body * Element::getBody (void) const {
     return m_body;
   }
