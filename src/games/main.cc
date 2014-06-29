@@ -144,6 +144,9 @@ int main() {
       case game::ElementType::SCISSORS: // mother
         color = sf::Color(0xFF, 0x00, 0xBF);
         break;
+      case game::ElementType::BONUS:
+	color = sf::Color(0xFF, 0x80, 0x00);
+        break;
       }
 
       emitter->setColor(game::Distributions::constantDistribution(color));

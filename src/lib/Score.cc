@@ -25,6 +25,19 @@ namespace game {
      m_score+= m_factor*100;
   }
   
+  void Score::increaseScore(int value){
+    //si on enchaine des ennemies
+    if(m_upScore == ScoreStatus::UP){
+      m_factor++;
+    }
+    else{
+      m_upScore = ScoreStatus::UP;
+      m_factor = 1;
+    }
+    
+     m_score+= m_factor*value;
+  }
+  
   void Score::decreaseScore(void){
     //si on enchaine des ennemies
     if(m_upScore == ScoreStatus::DOWN){

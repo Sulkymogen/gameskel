@@ -45,9 +45,17 @@ namespace game {
 	    }
           }
           break;
+	  
+	default:
+	  break;
 
       }
       player->getLevel()->setLevel(player->getScore()->getScore()/800 +1);
+      
+      if(typeEnnemy == ElementType::BONUS){
+	elementEnnemy->disappear();
+	player->getScore()->increaseScore();
+      }
   }
 
   void WorldListener::BeginContact(b2Contact* contact) { 
@@ -96,6 +104,8 @@ namespace game {
               elementA->disappear();
             }
             break;
+	  default:
+	    break;
 
         }
       }
