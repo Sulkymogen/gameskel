@@ -193,13 +193,13 @@ int main() {
     fixtureDef.filter.maskBits = game::ElementFunction::PLAYER | game::ElementFunction::ENEMY | game::ElementFunction::BOUNDARY;
 
     //add four walls to the static body
-    polygonShape.SetAsBox( 310, 10, b2Vec2(0, -310), 0);//ground
+    polygonShape.SetAsBox( 310, 10, b2Vec2(0, -300), 0);//ground
     staticBody->CreateFixture(&fixtureDef);
-    polygonShape.SetAsBox( 310, 10, b2Vec2(0, 280), 0);//ceiling
+    polygonShape.SetAsBox( 310, 10, b2Vec2(0, 300), 0);//ceiling
     staticBody->CreateFixture(&fixtureDef);
-    polygonShape.SetAsBox( 10, 310, b2Vec2(-310, 0), 0);//left wall
+    polygonShape.SetAsBox( 10, 310, b2Vec2(-300, 0), 0);//left wall
     staticBody->CreateFixture(&fixtureDef);
-    polygonShape.SetAsBox( 10, 310, b2Vec2(280, 0), 0);//right wall
+    polygonShape.SetAsBox( 10, 310, b2Vec2(300, 0), 0);//right wall
     staticBody->CreateFixture(&fixtureDef);
 
     // load resources
