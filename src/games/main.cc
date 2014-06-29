@@ -34,6 +34,8 @@ int main() {
   // initialize
   std::random_device dev;
   game::Random random(dev());
+  
+  float mouse_factor = (SCREEN_HEIGHT-100.0f)/(SCREEN_HEIGHT);
 
   b2Vec2 b2_gravity(0.0f, 0.0f);
   b2World b2_world(b2_gravity);
@@ -82,6 +84,7 @@ int main() {
   window.setKeyRepeatEnabled(false);
 
   float ratio = static_cast<float>(SCREEN_HEIGHT) / static_cast<float>(SCREEN_WIDTH);
+  int entitiesNumber = 15;
 
   sf::View main_view;
   main_view.setCenter(0.0f, 0.0f);
@@ -159,18 +162,20 @@ int main() {
   player->getScore()->setFont(font);
   player->getLevel()->setFont(font);
 
+
   game::Clock clockElapsed;
   clockElapsed.setFont(font);
 
-  for (int i = 0; i < ENTITIES_NUMBER; i++) {
+  for (int i = 0; i < entitiesNumber; i++) {
     auto elt = game::Element::randomGeneration(&b2_world, random, player->getElementType(), player->getLevel());
     world.addEntity(elt, game::Memory::FROM_HEAP);
   }
 
+
   // main loop
   sf::Clock clock;
   while (window.isOpen()) {
-    if (ENTITIES_NUMBER + 1 > b2_world.GetBodyCount()) {
+    if (entitiesNumber + 1 > b2_world.GetBodyCount()) {
       auto elt = game::Element::randomGeneration(&b2_world, random,  player->getElementType(), player->getLevel());
       world.addEntity(elt, game::Memory::FROM_HEAP);
     }
@@ -227,13 +232,10 @@ int main() {
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::Right)){
       vx += PLAYER_SPEED;
     }
-
-    //vx = sf::Mouse::getPosition().x - 300.0f - b2_world.GetBodyList()->GetPosition().x;
-    //vy = sf::Mouse::getPosition().y - 300.0f - b2_world.GetBodyList()->GetPosition().y;
-    //std::cout << "Mouse X : " << sf::Mouse::getPosition().x << std::endl;
-    //std::cout << "Mouse y : " << sf::Mouse::getPosition().y << std::endl;
-
-
+    
+    vx = (sf::Mouse::getPosition(window).x - SCREEN_HEIGHT/2) * mouse_factor - 15.0f - player->getBody()->GetPosition().x;
+    vy = (sf::Mouse::getPosition(window).y - SCREEN_HEIGHT/2) * mouse_factor - 15.0f - player->getBody()->GetPosition().y;
+    
     float vmax = sqrt(vx * vx + vy * vy);
     if (vmax > 1e-4) {
       vx = PLAYER_SPEED * vx *2/ vmax;
@@ -244,6 +246,8 @@ int main() {
     }
 
     player->move(vx, vy);
+    
+    entitiesNumber = ENTITIES_NUMBER + clockElapsed.getTimeElapsed()/10;
 
     // update
     sf::Time elapsed = clock.restart();
@@ -263,7 +267,6 @@ int main() {
     clockElapsed.render(window);
     player->getScore()->render(window);
     player->getLevel()->render(window);
-
 
     window.display();
   }

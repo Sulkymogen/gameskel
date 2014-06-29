@@ -38,6 +38,7 @@ namespace game {
     void disappear(void);
     ElementFunction getFunction (void) const;
     ElementType getElementType (void) const;
+    b2Body * getBody (void) const;
     bool isPlayer(void);
 
   protected:

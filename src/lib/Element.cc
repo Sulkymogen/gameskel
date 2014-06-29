@@ -28,7 +28,7 @@ namespace game {
     b2FixtureDef fixture;
     fixture.shape = &circle;
     fixture.density = 1.0f;
-    fixture.friction = 0.1f;
+    fixture.friction = 1.0f;
     fixture.restitution = 1.0f;
     fixture.filter.categoryBits = static_cast<uint16>(ElementFunction::ENEMY);
     fixture.filter.maskBits = static_cast<uint16>(ElementFunction::ENEMY|ElementFunction::PLAYER);
@@ -231,6 +231,10 @@ namespace game {
 
   ElementType Element::getElementType(void) const {
     return m_type;
+  }
+
+  b2Body * Element::getBody (void) const {
+    return m_body;
   }
 
   sf::Texture * Element::warrior;
