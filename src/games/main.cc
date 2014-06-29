@@ -365,6 +365,8 @@ int main() {
 
       // update
       sf::Time elapsed = clock.restart();
+      //float framerate = 1 / (elapsed.asMillisecond() * 0.001);
+      //std::cout << framerate << std::endl;
       float dt = elapsed.asSeconds();
       b2_world.Step(dt, velocity_iterations, position_iterations);
       world.update(dt);

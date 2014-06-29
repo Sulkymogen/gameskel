@@ -31,6 +31,7 @@ namespace game {
     sf::Font *m_font;
     ScoreStatus m_upScore;
     int m_factor;
+    int m_scoreMax;
   };
 }
 

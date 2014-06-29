@@ -4,7 +4,8 @@ namespace game {
   Score::Score() :
   m_score(0)
   , m_upScore(ScoreStatus::IDDLE)
-  , m_factor(1){
+  , m_factor(1)
+  , m_scoreMax(0){
     
   }
   
@@ -23,6 +24,10 @@ namespace game {
     }
     
      m_score+= m_factor*100;
+     
+     if(m_scoreMax < m_score){
+       m_scoreMax = m_score;
+     }
   }
   
   void Score::increaseScore(int value){
@@ -36,6 +41,10 @@ namespace game {
     }
     
      m_score+= m_factor*value;
+     
+     if(m_scoreMax < m_score){
+       m_scoreMax = m_score;
+     }
   }
   
   void Score::decreaseScore(void){
@@ -54,11 +63,20 @@ namespace game {
   
   void Score::render(sf::RenderWindow& window){
     sf::Text text;
+    
+    text.setFont(*m_font);
+    text.setString("Score Max: "+std::to_string(m_scoreMax));
+    text.setCharacterSize(24);
+    text.setColor(sf::Color(0xdf, 0x01, 0x01));
+    text.setPosition(60, 160);
+    
+    window.draw(text);
+    
     text.setFont(*m_font);
     text.setString("Score: "+std::to_string(m_score));
     text.setCharacterSize(24);
     text.setColor(sf::Color::Black);
-    text.setPosition(100, 160);
+    text.setPosition(60, 190);
     
     window.draw(text);
     
@@ -68,7 +86,7 @@ namespace game {
       text.setString("Combo: x-"+std::to_string(m_factor));
     
     //text.setPosition(0, 90);
-    text.setPosition(100, 250);
+    text.setPosition(60, 280);
     window.draw(text);
   }
   
