@@ -20,15 +20,12 @@
 #include <game/Player.h>
 #include <game/WorldListener.h>
 #include <game/Param.h>
+#include <game/Clock.h>
 #include <iostream>
 
 #include <Box2D/Box2D.h>
 
-#include <iostream>
-
 #include "config.h"
-
-#define ENTITIES_NUMBER 1
 
 int main() {
   // initialize
@@ -60,14 +57,18 @@ int main() {
   game::WorldListener worldListenerInstance;
   b2_world.SetContactListener(&worldListenerInstance);
 
-  game::Player player(game::ElementType::ROCK, 200.0f, 200.0f, &b2_world);
-  world.addEntity(&player, game::Memory::FROM_STACK);
+  //game::Player player(game::ElementType::ROCK, 0.0f, 0.0f, &b2_world);
+  auto player = game::Player::randomGeneration(&b2_world, random);
+  world.addEntity(player, game::Memory::FROM_STACK);
+
+ 
+
 
   //a static body
   b2BodyDef boundaryDef;
   boundaryDef.type = b2_staticBody;
   boundaryDef.position.Set(0, 0);
-  b2Body* staticBody = b2_world.CreateBody(&boundaryDef);
+  b2Body *staticBody = b2_world.CreateBody(&boundaryDef);
 
   //shape definition
   b2PolygonShape polygonShape;
@@ -101,33 +102,39 @@ int main() {
   game::Element::mother=manager.getTexture("mother.png");
   game::Element::mother->setSmooth(true);
 
-
-  sf::Texture * background = manager.getTexture("background.jpg");
+#if 0
+  sf::Texture *background = manager.getTexture("background.jpg");
   sf::Sprite bgsprite ;
   bgsprite.setScale(0.59,0.79f);
   bgsprite.setPosition(-300,-300);
   bgsprite.setTexture(* background);
+#else
+  sf::Texture *background = manager.getTexture("background2.png");
+  sf::Sprite bgsprite ;
+  bgsprite.setPosition(-300,-300);
+  bgsprite.setTexture(* background);
+#endif // 0
 
   sf::Font *font = manager.getFont("arial.ttf");
-  player.getScore()->setFont(font);
+  player->getScore()->setFont(font);
+  player->getLevel()->setFont(font);
+  
+  game::Clock clockElapsed;
+  clockElapsed.setFont(font);
 
-  game::Element *elmt;
-
-  for (int i = 0; i < ENTITIES_NUMBER; i++)
-  {
-    elmt = game::Element::randomGeneration(&b2_world, random);
-    world.addEntity(elmt, game::Memory::FROM_HEAP);
+  for (int i = 0; i < ENTITIES_NUMBER; i++) {
+    auto elt = game::Element::randomGeneration(&b2_world, random, player->getElementType(), player->getLevel());
+    world.addEntity(elt, game::Memory::FROM_HEAP);
   }
 
   // main loop
   sf::Clock clock;
   while (window.isOpen()) {
-    if (ENTITIES_NUMBER + 1 > b2_world.GetBodyCount())
-    {
-      elmt = game::Element::randomGeneration(&b2_world, random);
-      world.addEntity(elmt, game::Memory::FROM_HEAP);
+    if (ENTITIES_NUMBER + 1 > b2_world.GetBodyCount()) {
+      auto elt = game::Element::randomGeneration(&b2_world, random,  player->getElementType(), player->getLevel());
+      world.addEntity(elt, game::Memory::FROM_HEAP);
     }
-    
+
     // input
     sf::Event event;
     while (window.pollEvent(event)) {
@@ -145,31 +152,26 @@ int main() {
         }
       }
 
-      // clear when out of screen
-      int i = 0;
-      b2Body * currentBody = b2_world.GetBodyList();
+    }
 
-      while (i < b2_world.GetBodyCount())
-      {
-	b2Vec2 pos = currentBody->GetPosition();
-	if (pos.x < -340 || pos.x > 340 || pos.y < -340 || pos.y > 340)
-	{
-	  void* bodyUserData = currentBody->GetUserData();
-	  game::Element * element;
-	  if (bodyUserData) {
-	    element = static_cast<game::Element *>( bodyUserData);
-	    element->disappear();
-	  }
-	}
+    // clear when out of screen
+    for (b2Body *body = b2_world.GetBodyList(); body != nullptr; body = body->GetNext()) {
+      b2Vec2 pos = body->GetPosition();
 
-	currentBody = currentBody->GetNext();
-	i++;
+      if (pos.x < -340 || pos.x > 340 || pos.y < -340 || pos.y > 340) {
+        void* bodyUserData = body->GetUserData();
+
+        if (bodyUserData) {
+          auto element = static_cast<game::Element *>(bodyUserData);
+          element->disappear();
+        }
       }
+
     }
 
     float vx = 0.0f;
     float vy = 0.0f;
-    
+
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::Up)){
       vy -= PLAYER_SPEED;
     }
@@ -186,23 +188,26 @@ int main() {
       vx += PLAYER_SPEED;
     }
     
-    vx = (sf::Mouse::getPosition(window).x - SCREEN_HEIGHT/2) * mouse_factor - 15.0f - player.getBody()->GetPosition().x;
-    vy = (sf::Mouse::getPosition(window).y - SCREEN_HEIGHT/2) * mouse_factor - 15.0f - player.getBody()->GetPosition().y;
+    vx = (sf::Mouse::getPosition(window).x - SCREEN_HEIGHT/2) * mouse_factor - 15.0f - player->getBody()->GetPosition().x;
+    vy = (sf::Mouse::getPosition(window).y - SCREEN_HEIGHT/2) * mouse_factor - 15.0f - player->getBody()->GetPosition().y;
     
-    float vmax = sqrt(vx*vx+vy*vy);
-    if (0 != vmax)
-    {
-      vx = PLAYER_SPEED * vx/vmax;
-      vy = PLAYER_SPEED * vy/vmax;
+    float vmax = sqrt(vx * vx + vy * vy);
+    if (vmax > 1e-4) {
+      vx = PLAYER_SPEED * vx *2/ vmax;
+      vy = PLAYER_SPEED * vy *2/ vmax;
+    } else {
+      vx = 0.0f;
+      vy = 0.0f;
     }
 
-    player.move(vx, vy);
+    player->move(vx, vy);
 
     // update
     sf::Time elapsed = clock.restart();
     float dt = elapsed.asSeconds();
     b2_world.Step(dt, velocity_iterations, position_iterations);
     world.update(dt);
+    clockElapsed.update(dt);
 
     // render main view
     window.clear(sf::Color::White);
@@ -212,7 +217,9 @@ int main() {
 
     //Render secondary view
     window.setView(secondary_view);
-    player.getScore()->render(window);
+    clockElapsed.render(window);
+    player->getScore()->render(window);
+    player->getLevel()->render(window);
 
     window.display();
   }
