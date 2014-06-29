@@ -10,6 +10,8 @@ namespace game {
   public:
     explicit Score();
     
+    void setFont(sf::Font *font);
+    
     int getScore() const;
     
     void increaseScore(void);
@@ -19,6 +21,7 @@ namespace game {
     
   private:
     int m_score;
+    sf::Font *m_font;
   };
 }
 

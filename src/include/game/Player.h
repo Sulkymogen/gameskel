@@ -1,10 +1,9 @@
 #ifndef GAME_PLAYER_H
 #define GAME_PLAYER_H
 
-#define PLAYER_SPEED 50.0f
-
 #include <game/Element.h>
 #include <game/Score.h>
+#include <game/Param.h>
 
 namespace game {
 

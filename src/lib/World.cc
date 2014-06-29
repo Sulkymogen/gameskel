@@ -18,6 +18,7 @@
 #include <cassert>
 #include <algorithm>
 #include <memory>
+#include <iostream>
 
 namespace game {
 
@@ -34,13 +35,25 @@ namespace game {
   }
 
   void World::update(float dt) {
+    std::vector<Entity*> entities_to_delete;
+    
     std::sort(m_entities.begin(), m_entities.end(), [](const EntityPtr& e1, const EntityPtr& e2) {
       return e1->priority() < e2->priority();
     });
 
     for (auto& entity : m_entities) {
-      entity->update(dt);
+      EntityFuture future = entity->update(dt);
+      
+      if (future == EntityFuture::REMOVE) {
+        entities_to_delete.push_back(entity.get());
+      }
     }
+    
+    for (auto entity : entities_to_delete) {
+      removeEntity(entity);
+    }
+    
+    
   }
 
   void World::render(sf::RenderWindow& window) {
@@ -61,9 +74,13 @@ namespace game {
   }
 
   void World::removeEntity(Entity *e) {
-    std::remove_if(m_entities.begin(), m_entities.end(), [=](const EntityPtr& ptr) {
+    auto old_end = m_entities.end();
+    
+    auto new_end = std::remove_if(m_entities.begin(), m_entities.end(), [=](const EntityPtr& ptr) {
       return e == ptr.get();
     });
+    
+    m_entities.erase(new_end, old_end);
   }
 
   void World::registerHandler(EventType type, EventHandler handler) {

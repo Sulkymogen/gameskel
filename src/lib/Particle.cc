@@ -100,7 +100,7 @@ namespace game {
     std::push_heap(m_particles.begin(), m_particles.end());
   }
 
-  void ParticleSystem::update(float dt) {
+  EntityFuture ParticleSystem::update(float dt) {
     for (auto& p : m_particles) {
       p.remaining_lifetime -= dt;
     }
@@ -130,6 +130,8 @@ namespace game {
       m_tick += 1;
       std::cerr << m_particles.size() << '\n';
     }
+    
+    return EntityFuture::KEEP;
   }
 
   void ParticleSystem::render(sf::RenderWindow& window)  {

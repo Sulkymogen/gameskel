@@ -24,7 +24,8 @@ namespace game {
     return 0;
   }
 
-  void Entity::update(float dt) {
+  EntityFuture Entity::update(float dt) {
+    return EntityFuture::KEEP;
     // default: do nothing
   }
 
