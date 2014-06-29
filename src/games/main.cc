@@ -119,10 +119,10 @@ int main() {
   player->getScore()->setFont(font);
   player->getLevel()->setFont(font);
 
-  for (int i = 0; i < ENTITIES_NUMBER; i++) {
-    auto elt = game::Element::randomGeneration(&b2_world, random, player->getElementType(), player->getLevel());
-    world.addEntity(elt, game::Memory::FROM_HEAP);
-  }
+  //for (int i = 0; i < ENTITIES_NUMBER; i++) {
+  //auto elt = game::Element::randomGeneration(&b2_world, random, player->getElementType(), player->getLevel());
+  //world.addEntity(elt, game::Memory::FROM_HEAP);
+  //}
 
   // main loop
   sf::Clock clock;

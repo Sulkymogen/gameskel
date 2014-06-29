@@ -26,7 +26,7 @@ namespace game {
     b2FixtureDef fixture;
     fixture.shape = &circle;
     fixture.density = 1.0f;
-    fixture.friction = 0.1f;
+    fixture.friction = 1.0f;
     fixture.restitution = 1.0f;
     fixture.filter.categoryBits = static_cast<uint16>(ElementFunction::ENEMY);
     fixture.filter.maskBits = static_cast<uint16>(ElementFunction::ENEMY|ElementFunction::PLAYER);
@@ -172,7 +172,7 @@ namespace game {
     if (m_function == ElementFunction::PLAYER) {
       sf::CircleShape shape;
       shape.setRadius(24.0f);
-      shape.setOrigin(9.0f, 9.0f);
+      shape.setOrigin(8.5f, 8.5f);
       shape.setPosition(pos.x,pos.y);
       shape.setFillColor(sf::Color(0,0,0,150));
       window.draw(shape);
