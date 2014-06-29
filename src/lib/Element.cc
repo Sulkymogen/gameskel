@@ -235,6 +235,14 @@ namespace game {
   b2Body * Element::getBody (void) const {
     return m_body;
   }
+  
+  bool Element::isGhost(void) const {
+    return ElementState::GHOST == m_state;
+  }
+  
+  void Element::setState(ElementState state) {
+    m_state = state;
+  }
 
   sf::Texture * Element::warrior;
   sf::Texture * Element::mother;

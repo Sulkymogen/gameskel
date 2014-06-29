@@ -35,6 +35,8 @@ int main() {
   std::random_device dev;
   game::Random random(dev());
   
+  float ghost_time = GHOST_TIME;
+  
   float mouse_factor = (SCREEN_HEIGHT-100.0f)/(SCREEN_HEIGHT);
 
   b2Vec2 b2_gravity(0.0f, 0.0f);
@@ -164,11 +166,6 @@ int main() {
   game::Clock clockElapsed;
   clockElapsed.setFont(font);
 
-  for (int i = 0; i < ENTITIES_NUMBER; i++) {
-    auto elt = game::Element::randomGeneration(&b2_world, random, player->getElementType(), player->getLevel());
-    world.addEntity(elt, game::Memory::FROM_HEAP);
-  }
-
   // main loop
   sf::Clock clock;
   while (window.isOpen()) {
@@ -230,8 +227,8 @@ int main() {
       vx += PLAYER_SPEED;
     }
     
-    vx = (sf::Mouse::getPosition(window).x - SCREEN_HEIGHT/2) * mouse_factor - 15.0f - player->getBody()->GetPosition().x;
-    vy = (sf::Mouse::getPosition(window).y - SCREEN_HEIGHT/2) * mouse_factor - 15.0f - player->getBody()->GetPosition().y;
+    vx = (sf::Mouse::getPosition(window).x - SCREEN_HEIGHT/2) * mouse_factor - player->getBody()->GetPosition().x;
+    vy = (sf::Mouse::getPosition(window).y - SCREEN_HEIGHT/2) * mouse_factor - player->getBody()->GetPosition().y;
     
     float vmax = sqrt(vx * vx + vy * vy);
     if (vmax > 1e-4) {
@@ -264,6 +261,15 @@ int main() {
     player->getLevel()->render(window);
 
     window.display();
+    
+    if (player->isGhost() && ghost_time > 0.0f) {
+      ghost_time = ghost_time - dt;
+      std::cout << "Ghost" << std::endl;
+    } else {
+      ghost_time = GHOST_TIME;
+      player->setState(game::ElementState::ALIVE);
+      std::cout << "Not Ghost" << std::endl;
+    }
   }
 
   return 0;
