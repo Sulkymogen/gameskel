@@ -45,13 +45,21 @@ int main() {
   sf::Sprite menu_bg_sprite;
   menu_bg_sprite.setPosition(0, 0);
   menu_bg_sprite.setTexture(* menu_bg);
-
-  sf::Texture * menu_jouer = manager.getTexture("jouer.png");
+  
+  
+  sf::Texture * menu_logo = manager.getTexture("guerrier-tigre-maman-transparent.png");
+  sf::Sprite menu_logo_sprite;
+  menu_logo_sprite.setPosition(10, 10);
+  menu_logo_sprite.setScale(0.40f, 0.40f);
+  menu_logo_sprite.setTexture(* menu_logo);
+  
+  
+  sf::Texture * menu_jouer = manager.getTexture("jouer2.png");
   sf::Sprite menu_jouer_sprite;
   menu_jouer_sprite.setPosition(100, 350);
   menu_jouer_sprite.setTexture(* menu_jouer);
-
-  sf::Texture * menu_quitter = manager.getTexture("quitter.png");
+  
+  sf::Texture * menu_quitter = manager.getTexture("quitter2.png");
   sf::Sprite menu_quitter_sprite;
   menu_quitter_sprite.setPosition(100, 500);
   menu_quitter_sprite.setTexture(* menu_quitter);
@@ -92,6 +100,7 @@ int main() {
     menu.draw(menu_bg_sprite);
     menu.draw(menu_jouer_sprite);
     menu.draw(menu_quitter_sprite);
+    menu.draw(menu_logo_sprite);
     menu.display();
 
   } // menu isOpen
@@ -99,14 +108,15 @@ int main() {
 
 
   if (play) {
+    float ghost_time = GHOST_TIME;
+    
+    bool play_with_mouse = true;
     //
     // Game
 
     // initialize
     std::random_device dev;
     game::Random random(dev());
-
-    float mouse_factor = (SCREEN_HEIGHT-100.0f)/(SCREEN_HEIGHT);
 
     b2Vec2 b2_gravity(0.0f, 0.0f);
     b2World b2_world(b2_gravity);
@@ -234,11 +244,6 @@ int main() {
     game::Clock clockElapsed;
     clockElapsed.setFont(font);
 
-    for (int i = 0; i < ENTITIES_NUMBER; i++) {
-      auto elt = game::Element::randomGeneration(&b2_world, random, player->getElementType(), player->getLevel());
-      world.addEntity(elt, game::Memory::FROM_HEAP);
-    }
-
     // main loop
     sf::Clock clock;
     while (window.isOpen()) {
@@ -259,9 +264,15 @@ int main() {
               window.close();
               break;
 
+            case sf::Keyboard::Space:
+              play_with_mouse = !play_with_mouse;
+              break;
+
             default:
               break;
           }
+        } else if (event.type == sf::Event::MouseButtonPressed) {
+          play_with_mouse = !play_with_mouse;
         }
 
       }
@@ -284,24 +295,29 @@ int main() {
       float vx = 0.0f;
       float vy = 0.0f;
 
-      if(sf::Keyboard::isKeyPressed(sf::Keyboard::Up)){
-        vy -= PLAYER_SPEED;
-      }
+      if (play_with_mouse) {
+        auto mouse_position = sf::Mouse::getPosition(window);
+        auto mouse_world_position = window.mapPixelToCoords(mouse_position, main_view);
 
-      if(sf::Keyboard::isKeyPressed(sf::Keyboard::Down)){
-        vy += PLAYER_SPEED;
-      }
+        vx = mouse_world_position.x - player->getBody()->GetPosition().x;
+        vy = mouse_world_position.y - player->getBody()->GetPosition().y;
+      } else {
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::Up)){
+          vy -= PLAYER_SPEED;
+        }
 
-      if(sf::Keyboard::isKeyPressed(sf::Keyboard::Left)){
-        vx -= PLAYER_SPEED;
-      }
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::Down)){
+          vy += PLAYER_SPEED;
+        }
 
-      if(sf::Keyboard::isKeyPressed(sf::Keyboard::Right)){
-        vx += PLAYER_SPEED;
-      }
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::Left)){
+          vx -= PLAYER_SPEED;
+        }
 
-      vx = (sf::Mouse::getPosition(window).x - SCREEN_HEIGHT/2) * mouse_factor - player->getBody()->GetPosition().x;
-      vy = (sf::Mouse::getPosition(window).y - SCREEN_HEIGHT/2) * mouse_factor - player->getBody()->GetPosition().y;
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::Right)){
+          vx += PLAYER_SPEED;
+        }
+      }
 
       float vmax = sqrt(vx * vx + vy * vy);
       if (vmax > 1e-4) {
@@ -327,6 +343,13 @@ int main() {
       window.draw(bgsprite);
       world.render(window);
 
+      if (player->isGhost() && ghost_time > 0.0f) {
+      ghost_time = ghost_time - dt;
+      } else {
+	ghost_time = GHOST_TIME;
+	player->setState(game::ElementState::ALIVE);
+      }
+    
       //Render secondary view
       window.setView(secondary_view);
       clockElapsed.render(window);

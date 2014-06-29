@@ -18,6 +18,7 @@ namespace game {
 
   enum class ElementState {
     ALIVE,
+    GHOST,
     DEAD,
   };
 
@@ -41,6 +42,8 @@ namespace game {
     ElementType getElementType (void) const;
     b2Body * getBody (void) const;
     bool isPlayer(void);
+    bool isGhost(void) const;
+    void setState(ElementState state);
 
   protected:
     void setFunction (ElementFunction function);
