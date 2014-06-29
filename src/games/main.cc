@@ -46,12 +46,14 @@ int main() {
   menu_bg_sprite.setPosition(0, 0);
   menu_bg_sprite.setTexture(* menu_bg);
   
-  sf::Texture * menu_jouer = manager.getTexture("jouer.png");
+  
+  
+  sf::Texture * menu_jouer = manager.getTexture("jouer2.png");
   sf::Sprite menu_jouer_sprite;
   menu_jouer_sprite.setPosition(100, 350);
   menu_jouer_sprite.setTexture(* menu_jouer);
   
-  sf::Texture * menu_quitter = manager.getTexture("quitter.png");
+  sf::Texture * menu_quitter = manager.getTexture("quitter2.png");
   sf::Sprite menu_quitter_sprite;
   menu_quitter_sprite.setPosition(100, 500);
   menu_quitter_sprite.setTexture(* menu_quitter);
