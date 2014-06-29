@@ -337,6 +337,13 @@ int main() {
 
       //Render secondary view
       window.setView(secondary_view);
+      
+      sf::RectangleShape rectangle;
+      rectangle.setSize(sf::Vector2f(SCREEN_WIDTH-SCREEN_HEIGHT, SCREEN_HEIGHT));
+      rectangle.setFillColor(sf::Color(136, 155, 107));
+      rectangle.setPosition(0, 0);
+      window.draw(rectangle);
+      
       clockElapsed.render(window);
       player->getScore()->render(window);
       player->getLevel()->render(window);
