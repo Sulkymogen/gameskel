@@ -148,7 +148,7 @@ int main() {
 
       world.addEntity(system, game::Memory::FROM_HEAP);
 
-      return game::EventStatus::KEEP;git stut
+      return game::EventStatus::KEEP;
     });
 
     sf::RenderWindow window(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT), GAME_NAME " (version " GAME_VERSION ")", sf::Style::Titlebar|sf::Style::Close);
