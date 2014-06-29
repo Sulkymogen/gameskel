@@ -3,7 +3,9 @@
 #include <cassert>
 #include <cmath>
 
+#include <game/Events.h>
 #include <game/Param.h>
+#include <game/World.h>
 
 namespace game {
 
@@ -107,7 +109,7 @@ namespace game {
       target = ElementType::PAPER;
       hunter = ElementType::ROCK;
       break;
-    default : 
+    default :
       target = player_type;
       hunter = player_type;
     }
@@ -183,12 +185,19 @@ namespace game {
 
   void Element::disappear() {
     m_state = ElementState::DEAD;
+
+    assert(world);
+
+    DeadEvent event;
+    event.what = m_type;
+    event.where = m_body->GetPosition();
+    world->triggerEvent(nullptr, &event);
   }
 
   ElementFunction Element::getFunction() const{
     return m_function;
   }
-  
+
   bool Element::isPlayer() {
     if (m_function == ElementFunction::PLAYER) {
       return true;
@@ -222,10 +231,15 @@ namespace game {
   ElementType Element::getElementType(void) const {
     return m_type;
   }
+  
+  b2Body * Element::getBody (void) const {
+    return m_body;
+  }
 
   sf::Texture * Element::warrior;
   sf::Texture * Element::mother;
   sf::Texture * Element::tiger;
 
+  World *Element::world = nullptr;
 
 }

@@ -37,7 +37,7 @@ namespace game {
           }
           break;
       }
-      player->getLevel()->setLevel(player->getScore()->getScore()/800);
+      player->getLevel()->setLevel(player->getScore()->getScore()/800 +1);
   }
 
   void WorldListener::BeginContact(b2Contact* contact) { 
