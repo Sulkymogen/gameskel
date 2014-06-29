@@ -28,7 +28,7 @@ namespace game {
     b2FixtureDef fixture;
     fixture.shape = &circle;
     fixture.density = 1.0f;
-    fixture.friction = 1.0f;
+    fixture.friction = 0.05f;
     fixture.restitution = 1.0f;
     fixture.filter.categoryBits = static_cast<uint16>(ElementFunction::ENEMY);
     fixture.filter.maskBits = static_cast<uint16>(ElementFunction::ENEMY|ElementFunction::PLAYER);
@@ -173,12 +173,12 @@ namespace game {
       break;
     }
 
-    if (m_function == ElementFunction::PLAYER) {      
+    if (m_function == ElementFunction::PLAYER) {
       sf::CircleShape shape;
       shape.setRadius(24.0f);
       shape.setOrigin(24.0f, 24.0f);
       shape.setPosition(pos.x,pos.y);
-      
+
       sf::Color color;
       switch(m_type){
       case game::ElementType::PAPER: // warrior
@@ -249,6 +249,14 @@ namespace game {
 
   b2Body * Element::getBody (void) const {
     return m_body;
+  }
+  
+  bool Element::isGhost(void) const {
+    return ElementState::GHOST == m_state;
+  }
+  
+  void Element::setState(ElementState state) {
+    m_state = state;
   }
 
   sf::Texture * Element::warrior;

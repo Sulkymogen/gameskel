@@ -15,7 +15,10 @@ namespace game {
             elementEnnemy->disappear();
             player->getScore()->increaseScore();
           } else if (typeEnnemy == ElementType::SCISSORS) {
-            player->getScore()->decreaseScore();
+	    if (!player->isGhost()) {
+	      player->getScore()->decreaseScore();
+	      player->setState(game::ElementState::GHOST);
+	    }
           }
           break;
             
@@ -24,7 +27,10 @@ namespace game {
             elementEnnemy->disappear();
             player->getScore()->increaseScore();
           } else if (typeEnnemy == ElementType::PAPER) {
-            player->getScore()->decreaseScore();
+	    if (!player->isGhost()) {
+	      player->getScore()->decreaseScore();
+	      player->setState(game::ElementState::GHOST);
+	    }
           }
           break;
             
@@ -33,7 +39,10 @@ namespace game {
             elementEnnemy->disappear();
             player->getScore()->increaseScore();
           } else if (typeEnnemy == ElementType::ROCK) {
-            player->getScore()->decreaseScore();
+            if (!player->isGhost()) {
+	      player->getScore()->decreaseScore();
+	      player->setState(game::ElementState::GHOST);
+	    }
           }
           break;
       }
@@ -56,9 +65,9 @@ namespace game {
     
     if (bodyUserDataA && bodyUserDataB) {
       if (elementA->isPlayer()) {
-        collision(elementA, elementB);        
+        collision(elementA, elementB);
       } else if (elementB->isPlayer()) {
-        collision(elementB, elementA);
+	collision(elementB, elementA);
       }  else {
         ElementType typeB = elementB->getElementType();
         

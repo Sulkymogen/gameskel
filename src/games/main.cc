@@ -35,18 +35,16 @@ int main() {
 
   manager.addSearchDir(GAME_DATADIR);
 
-  
-  // 
+
+  //
   // Menu
   sf::RenderWindow menu(sf::VideoMode(MENU_WIDTH, MENU_HEIGHT), GAME_NAME " (version " GAME_VERSION ")", sf::Style::Titlebar|sf::Style::Close);
   menu.setKeyRepeatEnabled(false);
-  
+
   sf::Texture * menu_bg = manager.getTexture("menu_bg.png");
   sf::Sprite menu_bg_sprite;
   menu_bg_sprite.setPosition(0, 0);
   menu_bg_sprite.setTexture(* menu_bg);
-  
-  
   
   sf::Texture * menu_jouer = manager.getTexture("jouer2.png");
   sf::Sprite menu_jouer_sprite;
@@ -57,9 +55,9 @@ int main() {
   sf::Sprite menu_quitter_sprite;
   menu_quitter_sprite.setPosition(100, 500);
   menu_quitter_sprite.setTexture(* menu_quitter);
-  
+
   bool play = false;
-  
+
   while (menu.isOpen()) {
     // input
     sf::Event event;
@@ -75,12 +73,12 @@ int main() {
 
           default:
             break;
-        } 
-        
+        }
+
       } else if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-          
+
         const sf::Vector2i localPosition = sf::Mouse::getPosition(menu);
-        
+
         if (menu_jouer_sprite.getGlobalBounds().contains(localPosition.x, localPosition.y)) {
           play = true;
           menu.close();
@@ -89,26 +87,27 @@ int main() {
         }
       }
     } // pollEvent
-    
+
     menu.clear(sf::Color::White);
     menu.draw(menu_bg_sprite);
     menu.draw(menu_jouer_sprite);
     menu.draw(menu_quitter_sprite);
     menu.display();
-    
+
   } // menu isOpen
-  
-  
-  
+
+
+
   if (play) {
+    float ghost_time = GHOST_TIME;
+    
+    bool play_with_mouse = true;
     //
     // Game
-    
+
     // initialize
     std::random_device dev;
     game::Random random(dev());
-    
-    float mouse_factor = (SCREEN_HEIGHT-100.0f)/(SCREEN_HEIGHT);
 
     b2Vec2 b2_gravity(0.0f, 0.0f);
     b2World b2_world(b2_gravity);
@@ -195,18 +194,18 @@ int main() {
     fixtureDef.filter.maskBits = game::ElementFunction::PLAYER | game::ElementFunction::ENEMY | game::ElementFunction::BOUNDARY;
 
     //add four walls to the static body
-    polygonShape.SetAsBox( 310, 10, b2Vec2(0, -310), 0);//ground
+    polygonShape.SetAsBox( 310, 10, b2Vec2(0, -300), 0);//ground
     staticBody->CreateFixture(&fixtureDef);
-    polygonShape.SetAsBox( 310, 10, b2Vec2(0, 280), 0);//ceiling
+    polygonShape.SetAsBox( 310, 10, b2Vec2(0, 300), 0);//ceiling
     staticBody->CreateFixture(&fixtureDef);
-    polygonShape.SetAsBox( 10, 310, b2Vec2(-310, 0), 0);//left wall
+    polygonShape.SetAsBox( 10, 310, b2Vec2(-300, 0), 0);//left wall
     staticBody->CreateFixture(&fixtureDef);
-    polygonShape.SetAsBox( 10, 310, b2Vec2(280, 0), 0);//right wall
+    polygonShape.SetAsBox( 10, 310, b2Vec2(300, 0), 0);//right wall
     staticBody->CreateFixture(&fixtureDef);
 
     // load resources
 
-    
+
     game::Element::warrior=manager.getTexture("warrior.png");
     game::Element::warrior->setSmooth(true);
     game::Element::tiger=manager.getTexture("tiger.png");
@@ -234,11 +233,6 @@ int main() {
     game::Clock clockElapsed;
     clockElapsed.setFont(font);
 
-    for (int i = 0; i < ENTITIES_NUMBER; i++) {
-      auto elt = game::Element::randomGeneration(&b2_world, random, player->getElementType(), player->getLevel());
-      world.addEntity(elt, game::Memory::FROM_HEAP);
-    }
-
     // main loop
     sf::Clock clock;
     while (window.isOpen()) {
@@ -259,9 +253,15 @@ int main() {
               window.close();
               break;
 
+            case sf::Keyboard::Space:
+              play_with_mouse = !play_with_mouse;
+              break;
+
             default:
               break;
           }
+        } else if (event.type == sf::Event::MouseButtonPressed) {
+          play_with_mouse = !play_with_mouse;
         }
 
       }
@@ -284,25 +284,30 @@ int main() {
       float vx = 0.0f;
       float vy = 0.0f;
 
-      if(sf::Keyboard::isKeyPressed(sf::Keyboard::Up)){
-        vy -= PLAYER_SPEED;
+      if (play_with_mouse) {
+        auto mouse_position = sf::Mouse::getPosition(window);
+        auto mouse_world_position = window.mapPixelToCoords(mouse_position, main_view);
+
+        vx = mouse_world_position.x - player->getBody()->GetPosition().x;
+        vy = mouse_world_position.y - player->getBody()->GetPosition().y;
+      } else {
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::Up)){
+          vy -= PLAYER_SPEED;
+        }
+
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::Down)){
+          vy += PLAYER_SPEED;
+        }
+
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::Left)){
+          vx -= PLAYER_SPEED;
+        }
+
+        if(sf::Keyboard::isKeyPressed(sf::Keyboard::Right)){
+          vx += PLAYER_SPEED;
+        }
       }
 
-      if(sf::Keyboard::isKeyPressed(sf::Keyboard::Down)){
-        vy += PLAYER_SPEED;
-      }
-
-      if(sf::Keyboard::isKeyPressed(sf::Keyboard::Left)){
-        vx -= PLAYER_SPEED;
-      }
-
-      if(sf::Keyboard::isKeyPressed(sf::Keyboard::Right)){
-        vx += PLAYER_SPEED;
-      }
-      
-      vx = (sf::Mouse::getPosition(window).x - SCREEN_HEIGHT/2) * mouse_factor - 15.0f - player->getBody()->GetPosition().x;
-      vy = (sf::Mouse::getPosition(window).y - SCREEN_HEIGHT/2) * mouse_factor - 15.0f - player->getBody()->GetPosition().y;
-      
       float vmax = sqrt(vx * vx + vy * vy);
       if (vmax > 1e-4) {
         vx = PLAYER_SPEED * vx *2/ vmax;
@@ -327,6 +332,13 @@ int main() {
       window.draw(bgsprite);
       world.render(window);
 
+      if (player->isGhost() && ghost_time > 0.0f) {
+      ghost_time = ghost_time - dt;
+      } else {
+	ghost_time = GHOST_TIME;
+	player->setState(game::ElementState::ALIVE);
+      }
+    
       //Render secondary view
       window.setView(secondary_view);
       clockElapsed.render(window);
